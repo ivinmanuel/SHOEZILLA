@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments::head_sec}"></head>
+
+<body>
+<header class="header-area header-style-1 header-height-2" th:replace="~{fragments::header-sec}">
+</header>
+<div th:replace="~{fragments::side-header}"></div>
+
+<main class="main">
+    <div class="page-header breadcrumb-wrap">
+        <div class="container">
+            <div class="breadcrumb">
+                <a th:href="@{/home}" rel="nofollow">Home</a>
+                <span></span> Pages
+                <span></span> Order
+            </div>
+        </div>
+    </div>
+    <section class="pt-80 pb-100">
+        <div class="container">
+            <div class="row">
+
+                <div class="card">
+                    <div class="card-header">
+                        <a  th:href="@{/order?pageNo=0}"> Back</a>
+                        <h5 class="mb-0">Your Orders</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th>Order</th>
+                                    <th>Product</th>
+                                    <th>Product Discription</th>
+                                    <th>Unit Pize</th>
+                                    <th>Quantity</th>
+                                    <th>Total Prize</th>
+
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="orderDetail:${orderDetails}">
+                                    <td th:text="${orderDetail.order.id}">#</td>
+
+                                    <td >
+                                        <img th:if="${not #lists.isEmpty(orderDetail.product.image)}"
+                                             th:src="@{|/imgs/items/${orderDetail.product.image[0].getName()}|}" width="40" height="40" class="img-xs" alt="Item"> <br>
+                                        <span th:text="${orderDetail.product.name}"></span>
+                                    </td>
+                                    <td th:text="${orderDetail.product.description}"></td>
+                                    <td th:text="${orderDetail.unitPrice}"></td>
+                                    <td th:text="${orderDetail.quantity}">$</td>
+                                    <td th:text="${orderDetail.totalPrice}">$</td>
+                                    <td th:if="${orderDetail.order.orderStatus=='Delivered'}">
+                                        <a class="btn btn-primary" th:href="@{/showReviewPage(productId=${orderDetail.product.id})}">Add Review</a>
+                                    </td>
+                                </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer th:replace="~{fragments::footer-sec}"></footer>
+
+<div th:replace="~{fragments::pre-loader}"></div>
+<!-- Vendor JS-->
+<div th:replace="~{fragments::scripts}"></div>
+
+</body>
+</html>

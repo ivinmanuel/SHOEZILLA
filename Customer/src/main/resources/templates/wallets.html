@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments::head_sec}"></head>
+
+<body>
+<header class="header-area header-style-1 header-height-2" th:replace="~{fragments::header-sec}">
+</header>
+<div th:replace="~{fragments::side-header}"></div>
+
+
+<div class="container mt-100">
+
+    <h3 class="text-center">Customer Wallet Details</h3>
+
+    <div class="text-center">
+        <h5 style="margin-bottom: 10px; margin-top: 20px;">Customer Name:  [(${wallet.customer.name})]</h5>
+        <h5 style="margin-bottom: 10px;">Wallet Balance:<span th:text="${wallet!=null? wallet.balance:'N/A'}"></span>
+        </h5>    </div>
+
+
+    <div class="wallet-form" >
+        <h5>Add Amount to Wallet</h5>
+        <form id="walletForm">
+            <label for="amount">Amount to Add:</label>
+            <input type="number" id="amount" name="amount"  min="0" max="99999" placeholder="min 0 and max 99999" required>
+            <button class="btn btn-fill-out btn-block hover-up" onclick="addWallet()">Add</button>
+        </form>
+    </div>
+    <div>&nbsp;&nbsp;&nbsp;</div>
+
+  <div class="card-body table-responsive" style="max-height: 300px; overflow-y: auto;">
+    <table th:class="table"  >
+        <thead style="position: sticky; top: 0; background-color: white; z-index: 1;">
+        <tr>
+            <th>Amount</th>
+            <th>Type</th>
+            <th>Transaction Status</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="walletHistory : ${walletHistoryList}">
+            <td>₹[(${walletHistory.amount})]</td>
+            <td th:text="${walletHistory.type}"></td>
+            <td th:text="${walletHistory.transactionStatus}"></td>
+        </tr>
+        </tbody>
+    </table>
+  </div>
+
+
+
+
+
+</div>
+<div>&nbsp;&nbsp;&nbsp;&nbsp;</div>
+
+
+
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<footer th:replace="~{fragments::footer-sec}"></footer>
+
+<div th:replace="~{fragments::pre-loader}"></div>
+<!-- Vendor JS-->
+<div th:replace="~{fragments::scripts}"></div>
+
+<script>
+    function addWallet(event) {
+        console.log("hello")
+        event.preventDefault();
+        console.log("called");
+        const amountElement = document.getElementById("amount");
+        const cash = amountElement.value;
+        console.log(cash);
+
+        walletPayment(cash);
+    }
+
+    const walletPayment = (cash) => {
+
+        $.ajax(
+            {
+                url:'/shop/add-wallet',
+                data:JSON.stringify({amount:cash}),
+                contentType: 'application/json',
+                type:'POST',
+                dataType:'json',
+                success:function(response){
+                    console.log(response)
+
+                    if(response.status === "created"){
+
+                        let walletOptions ={
+                            key:'rzp_test_0KTaWunlL4sKzR',
+                            amount: response.amount,
+                            currency:'INR',
+                            name:'ShoeZilla',
+                            description:'Wallet Payment',
+                            image:'/imgs/theme/log.png',
+                            order_id:response.id,
+                            handler:function(response){
+                                console.log(response.razorpay_payment_id);
+                                console.log(response.razorpay_order_id);
+                                console.log(response.razorpay_signature);
+                                verifyPayment(response);
+
+                            },
+                            prefill: {
+                                name:"",
+                                email:"",
+                                contact:""
+                            },
+                            notes:{
+                                address:"ShoeZilla"
+                            },
+                            theme:{
+                                color: "#3399cc"
+                            }
+                        };
+                        let rzp = new Razorpay(walletOptions);
+
+                        rzp.on('payment.failed', function (response){
+                            console.log(response.error.code);
+                            console.log(response.error.description);
+                            console.log(response.error.source);
+                            console.log(response.error.step);
+                            console.log(response.error.reason);
+                            console.log(response.error.metadata.order_id);
+                            console.log(response.error.metadata.payment_id);
+                        });
+
+                        rzp.open();
+                    }
+                },
+                error:function(error){
+                    console.log(error)
+                    alert("something went wrong")
+                }
+            }
+        )
+
+        function verifyPayment(payment){
+            $.ajax({
+                url:'/shop/verify-wallet',
+                method: 'post',
+                data:JSON.stringify(payment),
+                contentType: 'application/json',
+                dataType:'json',
+                success:(response)=>{
+                    if(response.status){
+                        alert("congrats!! Money Added to the Wallet");
+                        location.href='/shop/wallets'
+                    } else{
+                        alert("Payment failed!")
+                    }
+                }
+            });
+        }
+    }
+
+
+    const walletForm = document.getElementById("walletForm");
+    walletForm.addEventListener("submit", addWallet);
+
+
+    $(document).ready(function() {
+
+        $('#walletTable').DataTable();
+    });
+
+</script>
+
+
+<script src="/js/shop.js?v=3.4"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/jquery.dataTables.min.js" integrity="sha512-BkpSL20WETFylMrcirBahHfSnY++H2O1W+UnEEO4yNIl+jI2+zowyoGJpbtk6bx97fBXf++WJHSSK2MV4ghPcg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/dataTables.bootstrap4.min.js" integrity="sha512-OQlawZneA7zzfI6B1n1tjUuo3C5mtYuAWpQdg+iI9mkDoo7iFzTqnQHf+K5ThOWNJ9AbXL4+ZDwH7ykySPQc+A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+
+</body>
+</html>

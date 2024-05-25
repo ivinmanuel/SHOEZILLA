@@ -1,0 +1,52 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th = "http://www.thymeleaf.org">
+
+<head th:replace="~{fragments::header_sec}"></head>
+
+<body>
+<main>
+  <section class="content-main mt-80 mb-80">
+    <div class="card mx-auto card-login">
+      <div class="card-body">
+        <h4 class="card-title mb-4">Sign in</h4>
+        <form th:action="@{/do-login}" method="post">
+          <div>
+            <br>
+            <!-- Check for login error -->
+            <div th:if="${param.error}">
+
+              <div class="alert alert-danger col-xs-offset-1 col-xs-10 ">
+                Invalid username / password.
+              </div>
+
+            </div>
+            <div th:if="${param.logout}">
+
+              <div class="alert alert-success col-xs-offset-1 col-xs-10">
+                you are successfully logged out!!
+              </div>
+            </div>
+          </div>
+          <div class="mb-3">
+            <input class="form-control" name="username" placeholder="Username or email" type="text">
+          </div> <!-- form-group// -->
+          <div class="mb-3">
+            <input class="form-control" name="password" placeholder="Password" type="password">
+          </div> <!-- form-group// -->
+          <div class="mb-4">
+            <button type="submit" class="btn btn-dark w-100"> Login </button>
+          </div> <!-- form-group// -->
+
+        </form>
+        <p class="text-center mb-4">Don't have account? <a href="register" th:href="@{/register}" class="text-dark">Sign up</a></p>
+      </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div th:replace="~{fragments::footer_sec}"></div>
+</main>
+<div th:replace="~{fragments::script}"></div>
+</body>
+
+</html>

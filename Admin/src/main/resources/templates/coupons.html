@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th = "https://www.thymeleaf.org/">
+<head th:replace="~{fragments::header_sec}"></head>
+<body>
+
+<div class="screen-overlay"></div>
+<div th:replace="~{fragments::side_bar}"></div>
+
+
+<main class="main-wrap mt-50">
+  <div th:replace="~{fragments::nav_bar}"></div>
+
+
+  <section class="content-main">
+    <div class="content-header">
+      <div>
+        <h2 class="content-title card-title">Coupons</h2>
+        <p>Add, edit or delete a coupon</p>
+      </div>
+      <div>
+        <a type="button" class="btn btn-primary btn-sm rounded"  th:href="@{/add-coupon}">Create new</a>
+
+
+
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+
+
+
+          <div class="col-md-12">
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                <tr>
+                  <th>Status</th>
+                  <th>Coupon Code</th>
+                  <th>Offer Percentage</th>
+                  <th>Start Date</th>
+                  <th>Minimum Order Amount</th>
+                  <th>Maximum Offer Price</th>
+                  <th>available coupon</th>
+                  <th>Expire Date</th>
+                  <th>Update</th>
+                  <th>Action</th>
+
+
+
+
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="couponData: ${coupons}" >
+                  <td>
+                    <span class="badge badge-pill badge-soft-success" th:if="${couponData.enabled==true && couponData.isExpired()==false}">Active</span>
+                    <span class="badge badge-pill badge-soft-danger" th:if="${couponData.enabled==false && couponData.isExpired()==false}">Blocked </span>
+                    <span class="badge badge-pill badge-soft-pink" th:if="${couponData.isExpired()==true}">Expired</span>
+                  </td>
+                  <td th:text="${couponData.couponcode}"></td>
+                  <td th:text="${couponData.offerPercentage}"></td>
+                  <td th:text="${couponData.startDate}"></td>
+                  <td th:text="${couponData.minimumOrderAmount}"></td>
+                  <td th:text="${couponData.maximumOfferAmount}"></td>
+                  <td th:text="${couponData.count}"></td>
+                  <td th:text="${couponData.expireDate}"></td>
+                  <td><a class="btn btn-primary" th:href="@{/editCoupon(couponId=${couponData.id})}">Edit</a></td>
+                  <td>
+                    <a th:if="${couponData.enabled} == true" th:href="@{/disableCoupon(couponId=${couponData.id})}"
+                       class="btn btn-danger" onclick="if (!(confirm('Are you sure you want to Disable this coupon?'))) return false">Disable</a>
+                    <a th:if="${couponData.enabled} == false" onclick="if (!(confirm('Are you sure you want to Enable this coupon?'))) return false" th:href="@{/enableCoupon(couponId=${couponData.id})}"
+                       class=" btn btn-primary">Enable</a>
+                    <a  th:href="@{/deleteCoupon(couponId = ${couponData.id})}"
+                        class=" btn btn-danger" onclick="if (!(confirm('Are you sure you want to Delete this coupon?'))) return false">Delete</a>
+                  </td>
+
+
+                </tr>
+
+
+
+
+
+
+
+                </tbody>
+              </table>
+            </div>
+          </div> <!-- .col// -->
+        </div> <!-- .row // -->
+      </div> <!-- card body .// -->
+    </div> <!-- card .// -->
+    <!-- Add category-->
+
+
+  </section> <!-- content-main end// -->
+
+</main>
+
+
+
+<script src="/admin/js/vendors/jquery-3.6.0.min.js"></script>
+<script src="/admin/js/vendors/bootstrap.bundle.min.js"></script>
+<script src="/admin/js/vendors/select2.min.js"></script>
+<script src="/admin/js/vendors/perfect-scrollbar.js"></script>
+<script src="/admin/js/vendors/jquery.fullscreen.min.js"></script>
+<script src="/admin/js/vendors/chart.js"></script>
+<!-- Main Script -->
+<script src="/admin/js/main.js" type="text/javascript"></script>
+<script src="/admin/js/custom-chart.js" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/jquery.dataTables.min.js" integrity="sha512-BkpSL20WETFylMrcirBahHfSnY++H2O1W+UnEEO4yNIl+jI2+zowyoGJpbtk6bx97fBXf++WJHSSK2MV4ghPcg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/dataTables.bootstrap4.min.js" integrity="sha512-OQlawZneA7zzfI6B1n1tjUuo3C5mtYuAWpQdg+iI9mkDoo7iFzTqnQHf+K5ThOWNJ9AbXL4+ZDwH7ykySPQc+A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<!--<script>-->
+<!--  $(document).ready(function() {-->
+<!--    $('#couponTable').DataTable();-->
+<!--  });-->
+<!--</script>-->
+
+
+
+</body>
+</html>
