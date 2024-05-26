@@ -162,12 +162,20 @@ public class OrderServiceImpl implements OrderService {
 
     }
 
+
+    @Override
+    public Order findOrderByIdAndCustomerEmail(Long orderId, String email) {
+        return orderRepository.findOrderByIdAndCustomerEmail(orderId, email);
+    }
+
     @Override
     public void returnOrder(Long id) {
         Order order = orderRepository.getReferenceById(id);
         order.setOrderStatus("Return Pending");
         orderRepository.save(order);
     }
+
+
 
     @Override
     public List<Order> findOrderByCustomer(String email) {

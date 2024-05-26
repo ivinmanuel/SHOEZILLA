@@ -25,7 +25,7 @@ public class PdfGenerator {
 
     private List<DailyEarning> orders;
 
-    public void generate(HttpServletResponse response) throws DocumentException, IOException {
+    public void generate( HttpServletResponse response) throws DocumentException, IOException {
 
         Document document = new Document(PageSize.A4);
         PdfWriter.getInstance(document, response.getOutputStream());

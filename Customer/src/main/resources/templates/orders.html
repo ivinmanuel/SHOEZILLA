@@ -37,6 +37,7 @@
                                         <th>Total
                                         <th>Payment Method</th>
                                         <th>Actions</th>
+                                        <th>Invoice</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -55,6 +56,12 @@
                                                onclick="if (!confirm('Are you sure want to Return This item'))return false">
                                                 Return</a>
                                             <a th:if="${orderDetail.orderStatus !='Cancel'}" th:href="@{/orderDetails(orderId=${orderDetail.id})}" class="btn-small d-block">View</a></td>
+
+                                        <td>
+                                            <a aria-label="Download" class="btn hover-up" th:if="${orderDetail.orderStatus != 'Cancel'}" th:href="@{/generateInvoice(orderId=${orderDetail.id})}">
+                                                <i class="fi-rs-download"></i>
+                                            </a>
+                                        </td>
                                     </tr>
 
                                     </tbody>

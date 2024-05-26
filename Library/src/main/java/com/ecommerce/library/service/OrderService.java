@@ -32,7 +32,10 @@ public interface OrderService {
 
     void returnOrder(Long id);
     List<Order> findOrderByCustomer(String email);
-    public List<Order> getDailyOrders(LocalDate date);
+
+ Order findOrderByIdAndCustomerEmail(Long orderId, String email);
+
+ public List<Order> getDailyOrders(LocalDate date);
 
     Page<Order> findOrderByPageble(int page,int size);
     Page<Order> findOrderByCustomerPagable(int pageNo,String email);

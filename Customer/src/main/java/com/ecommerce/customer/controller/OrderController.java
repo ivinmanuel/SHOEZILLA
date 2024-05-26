@@ -1,12 +1,14 @@
 package com.ecommerce.customer.controller;
 
 import com.ecommerce.customer.config.CustomerDetails;
+import com.ecommerce.library.dto.DailyEarning;
 import com.ecommerce.library.model.*;
 import com.ecommerce.library.service.AddressService;
 import com.ecommerce.library.service.OrderService;
 import com.ecommerce.library.service.ShoppingCartService;
 import com.ecommerce.library.service.WalletService;
 import com.ecommerce.library.utils.PdfGenerator;
+import com.ecommerce.library.utils.PdfGeneratorAllInvoice;
 import com.lowagie.text.DocumentException;
 import com.razorpay.RazorpayClient;
 import com.razorpay.RazorpayException;
@@ -144,23 +146,25 @@ public class OrderController {
 
         return "done";
     }
+
+
     @GetMapping("/orderListPdf1")
     public void generatePdf(HttpServletResponse response, Principal principal) throws DocumentException, IOException {
-
-        String email=principal.getName();
+        String email = principal.getName();
         response.setContentType("application/pdf");
         DateFormat dateFormat = new SimpleDateFormat("YYYY-MM-DD:HH:MM:SS");
         String currentDateTime = dateFormat.format(new Date());
-        String headerkey = "Content-Disposition";
-        String headervalue = "attachment; filename=pdf_" + currentDateTime + ".pdf";
-        response.setHeader(headerkey, headervalue);
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=pdf_" + currentDateTime + ".pdf";
+        response.setHeader(headerKey, headerValue);
 
-       // List<Order> list=orderService.findOrderByCustomer(email);
+        List<Order> orders = orderService.findOrderByCustomer(email);
 
-        PdfGenerator pdfGenerator=new PdfGenerator();
-//       // pdfGenerator.setOrders(list);
+        PdfGeneratorAllInvoice pdfGenerator = new PdfGeneratorAllInvoice();
+        pdfGenerator.setOrders(orders);
         pdfGenerator.generate(response);
     }
+
 
 
 

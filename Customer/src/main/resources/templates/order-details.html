@@ -37,6 +37,7 @@
                                     <th>Unit Pize</th>
                                     <th>Quantity</th>
                                     <th>Total Prize</th>
+                                    <th>Invoice</th>
 
                                 </tr>
                                 </thead>
@@ -53,8 +54,13 @@
                                     <td th:text="${orderDetail.unitPrice}"></td>
                                     <td th:text="${orderDetail.quantity}">$</td>
                                     <td th:text="${orderDetail.totalPrice}">$</td>
-                                    <td th:if="${orderDetail.order.orderStatus=='Delivered'}">
-                                        <a class="btn btn-primary" th:href="@{/showReviewPage(productId=${orderDetail.product.id})}">Add Review</a>
+<!--                                    <td th:if="${orderDetail.order.orderStatus=='Delivered'}">-->
+<!--                                        <a class="btn btn-primary" th:href="@{/showReviewPage(productId=${orderDetail.product.id})}">Add Review</a>-->
+<!--                                    </td>-->
+                                    <td>
+                                        <a aria-label="Download" class="btn hover-up" th:if="${orderDetail.order.orderStatus != 'Cancel'}" th:href="@{/generateInvoice(orderId=${orderDetail.order.id})}">
+                                            <i class="fi-rs-download"></i>
+                                        </a>
                                     </td>
                                 </tr>
 

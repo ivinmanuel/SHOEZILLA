@@ -1,15 +1,21 @@
 package com.ecommerce.customer.controller;
 
+import com.ecommerce.customer.config.CustomerDetails;
 import com.ecommerce.library.dto.AddressDto;
 import com.ecommerce.library.model.Address;
 import com.ecommerce.library.model.Customer;
+import com.ecommerce.library.model.Order;
 import com.ecommerce.library.model.OrderDetails;
 import com.ecommerce.library.service.AddressService;
 import com.ecommerce.library.service.CustomerService;
 import com.ecommerce.library.service.OrderService;
+import com.ecommerce.library.utils.InvoiceGeneratorPdf;
+import com.lowagie.text.DocumentException;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -19,8 +25,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.IOException;
 import java.security.Principal;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -140,6 +150,29 @@ public class AccountController {
     public String showCancelOrder(@ModelAttribute("orderId")Long id){
         orderService.cancelOrder(id);
         return "redirect:/account";
+    }
+
+
+    @GetMapping("/generateInvoice")
+    public void generateInvoicePdf(@RequestParam("orderId") Long orderId, HttpServletResponse response, Principal principal) throws DocumentException, IOException {
+        String email = principal.getName();
+        Order order = orderService.findOrderByIdAndCustomerEmail(orderId, email);
+
+        if (order == null) {
+            // Handle no order found for the given id and customer email
+            response.sendError(HttpServletResponse.SC_NOT_FOUND, "Order not found");
+            return;
+        }
+
+        response.setContentType("application/pdf");
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd:HH:mm:ss");
+        String currentDateTime = dateFormat.format(new Date());
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=pdf_" + currentDateTime + ".pdf";
+        response.setHeader(headerKey, headerValue);
+
+        InvoiceGeneratorPdf invoiceGenerator = new InvoiceGeneratorPdf(order);
+        invoiceGenerator.generate(response);
     }
 
 
