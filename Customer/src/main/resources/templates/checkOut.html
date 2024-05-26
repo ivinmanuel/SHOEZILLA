@@ -27,8 +27,6 @@
                     <div class="divider mt-50 mb-50"></div>
                 </div>
             </div>
-
-
             <div th:if="${errorMessage}">
                 <p class = "alert alert-danger" th:text = "${errorMessage}"></p>
             </div>
@@ -211,71 +209,14 @@
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
 
+<script>
+    /*  function displayRadioValue() {
+          document.getElementById('myForm').submit();
 
+      }*/
+</script>
 
 <script>
-    // Function to handle payment response
-    function handlePaymentResponse(response) {
-        if (response.status === "payment success") {
-            // Redirect to order confirmation page or any other success page
-            window.location.href = "/orderConfirm";
-        } else if (response.status === "payment failed") {
-            // Display payment failure message
-            $('#paymentStatus').text("Payment failed. Please try again.");
-        } else if (response.status === "payment pending") {
-            // Display payment pending message
-            $('#paymentStatus').text("Payment is pending. Please wait for confirmation.");
-        } else if (response.status === "cash") {
-            location.href = '/shop/orderConfirm';
-        } else if (response.status === "created") {
-            // Handle Razorpay payment initialization
-            let options = {
-                key: 'rzp_test_0KTaWunlL4sKzR',
-                amount: response.amount,
-                currency: 'INR',
-                name: 'My Shoe store Ecommerce',
-                description: 'Purchase order',
-                order_id: response.id,
-                handler: function (response) {
-                    console.log(response.razorpay_payment_id);
-                    console.log(response.razorpay_order_id);
-                    console.log(response.razorpay_signature);
-
-                    location.href = '/shop/orderConfirm';
-                },
-                prefill: {
-                    name: "",
-                    email: "",
-                    contact: ""
-                },
-                notes: {
-                    address: "My Payment"
-                },
-                theme: {
-                    color: "#3399cc"
-                }
-            };
-            var rzp1 = new Razorpay(options);
-            rzp1.open();
-            rzp1.on('payment.failed', function (response) {
-                console.log(response.error.code);
-                console.log(response.error.description);
-                console.log(response.error.source);
-                console.log(response.error.step);
-                console.log(response.error.reason);
-                console.log(response.error.metadata.order_id);
-                console.log(response.error.metadata.payment_id);
-
-                alert("Failed!! Oops Payment failed. Please try after some time");
-            });
-        } else if (response.status === "noWallet") {
-            alert("Wallet amount is less");
-        } else if (response.status === "wallet") {
-            location.href = '/shop/orderConfirm';
-        }
-    }
-
-    // Function to initiate payment
     function placeOrder() {
         const checkedAddress = $('.selectCheckBox:checked').val();
         const paymentMethod = $('.payment_option:checked').val();
@@ -304,38 +245,109 @@
         }
     }
 
-    // Function to start payment process
     const paymentStart = (addressId, paymentMethod, amount) => {
         console.log(addressId);
         console.log(paymentMethod);
         console.log(amount);
 
         // Handle payment method specific actions
-        $.ajax({
-            url: '/shop/createPayment',
-            data: JSON.stringify({
-                addressId: addressId,
-                paymentMethod: paymentMethod,
-                amount: amount
-            }),
-            contentType: 'application/json',
-            type: 'POST',
-            dataType: 'json',
-            headers: {
-                'X-CSRF-TOKEN': $('[name="_csrf"]').attr('content')
-            },
-            success: function (response) {
-                console.log(response);
-                handlePaymentResponse(response); // Call handlePaymentResponse function with the response
-            },
-            error: function (error) {
-                console.log(error);
-                alert("Something went wrong!!");
-            }
-        });
+        if (paymentMethod === "cash_on_delivery") {
+            $.ajax({
+                url: '/shop/createPayment',
+                data: JSON.stringify({
+                    addressId: addressId,
+                    paymentMethod: paymentMethod,
+                    amount: amount
+                }),
+                contentType: 'application/json',
+                type: 'POST',
+                dataType: 'json',
+                headers: {
+                    'X-CSRF-TOKEN': $('[name="_csrf"]').attr('content')
+                },
+                success: function (response) {
+                    console.log(response);
+                    if (response.status === "cash") {
+                        location.href = '/shop/orderConfirm';
+                    }
+                },
+                error: function (error) {
+                    console.log(error);
+                    alert("Something went wrong!!");
+                }
+            });
+        } else {
+            $.ajax({
+                url: '/shop/createPayment',
+                data: JSON.stringify({
+                    addressId: addressId,
+                    paymentMethod: paymentMethod,
+                    amount: amount
+                }),
+                contentType: 'application/json',
+                type: 'POST',
+                dataType: 'json',
+                headers: {
+                    'X-CSRF-TOKEN': $('[name="_csrf"]').attr('content')
+                },
+                success: function (response) {
+                    console.log(response);
+                    if (response.status === "created") {
+                        let options = {
+                            key: 'rzp_test_0KTaWunlL4sKzR',
+                            amount: response.amount,
+                            currency: 'INR',
+                            name: 'My Shoe store Ecommerce',
+                            description: 'Purchase order',
+                            order_id: response.id,
+                            handler: function (response) {
+                                console.log(response.razorpay_payment_id);
+                                console.log(response.razorpay_order_id);
+                                console.log(response.razorpay_signature);
+
+                                location.href = '/shop/orderConfirm';
+                            },
+                            prefill: {
+                                name: "",
+                                email: "",
+                                contact: ""
+                            },
+                            notes: {
+                                address: "My Payment"
+                            },
+                            theme: {
+                                color: "#3399cc"
+                            }
+                        };
+                        var rzp1 = new Razorpay(options);
+                        rzp1.open();
+                        rzp1.on('payment.failed', function (response) {
+                            console.log(response.error.code);
+                            console.log(response.error.description);
+                            console.log(response.error.source);
+                            console.log(response.error.step);
+                            console.log(response.error.reason);
+                            console.log(response.error.metadata.order_id);
+                            console.log(response.error.metadata.payment_id);
+
+                            alert("Failed!! Oops Payment failed. Please try after some time");
+                        });
+                    } else if (response.status === "cash") {
+                        location.href = '/shop/orderConfirm';
+                    } else if (response.status === "noWallet") {
+                        alert("Wallet amount is less");
+                    } else if (response.status === "wallet") {
+                        location.href = '/shop/orderConfirm';
+                    }
+                },
+                error: function (error) {
+                    console.log(error);
+                    alert("Something went wrong!!");
+                }
+            });
+        }
     }
 </script>
-
 
 
 

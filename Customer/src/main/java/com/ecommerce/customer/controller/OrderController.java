@@ -6,7 +6,6 @@ import com.ecommerce.library.service.AddressService;
 import com.ecommerce.library.service.OrderService;
 import com.ecommerce.library.service.ShoppingCartService;
 import com.ecommerce.library.service.WalletService;
-import com.ecommerce.library.service.impl.PaymentService;
 import com.ecommerce.library.utils.PdfGenerator;
 import com.lowagie.text.DocumentException;
 import com.razorpay.RazorpayClient;
@@ -38,17 +37,14 @@ public class OrderController {
 
     WalletService walletService;
 
-    PaymentService paymentService;
-
 
     @Autowired
     public OrderController(OrderService orderService, AddressService addressService,
-                           ShoppingCartService shopCartService,WalletService walletService,PaymentService paymentService) {
+                           ShoppingCartService shopCartService,WalletService walletService) {
         this.orderService = orderService;
         this.addressService = addressService;
         this.shopCartService = shopCartService;
         this.walletService = walletService;
-        this.paymentService = paymentService;
     }
 
 
@@ -99,27 +95,12 @@ public class OrderController {
         }
 
         ShoppingCart shoppingCart = new ShoppingCart();
-        Payment payment = new Payment("pending", amount);
-        Payment processedPayment = paymentService.processPayment(payment);
+        orderService.saveOrder(shoppingCart, username, address_id, paymentMethod, amount);
 
-        // Handle order creation based on payment status
-        if ("success".equals(processedPayment.getStatus())) {
-            orderService.saveOrder(shoppingCart, username, address_id, paymentMethod, amount);
-        } else if ("failed".equals(processedPayment.getStatus())) {
-            // Handle failed payment
-            orderService.saveOrder(shoppingCart, username, address_id, paymentMethod, amount);
-
-            return "{\"status\": \"payment failed\"}";
-        } else {
-            // Handle pending payment
-            processedPayment.setStatus("payment pending");
-            paymentService.updatePayment(processedPayment);
-            return "{\"status\": \"payment pending\"}";
-        }
-
-        if (paymentMethod.equals("online_payment")) {
+        if(paymentMethod.equals("online_payment")) {
+            orderService.saveOrder(shoppingCart, username, address_id,paymentMethod,amount);
             RazorpayClient client = new RazorpayClient("rzp_test_0KTaWunlL4sKzR", "m8xtLRI9e6sRDuH7vmMvHaGo");
-            JSONObject object = new JSONObject();
+            org.json.JSONObject object = new org.json.JSONObject();
             object.put("amount", amount * 100);
             object.put("currency", "INR");
             object.put("receipt", "receipt#1");
@@ -128,19 +109,33 @@ public class OrderController {
             System.out.println(paymentMethod);
             System.out.println(address_id);
             return order.toString();
-        } else if (paymentMethod.equals("wallet")) {
-            Wallet wallet = walletService.findByCustomer(id);
-            if (wallet.getBalance() < amount) {
-                JSONObject option = new JSONObject();
-                option.put("status", "noWallet");
-                return option.toString();
-            } else {
-                walletService.debit(wallet, amount);
-                return "{\"status\": \"wallet\"}";
-            }
-        } else {
-            return "{\"status\": \"cash\"}";
+
         }
+        if(paymentMethod.equals("wallet")){
+            Wallet wallet=walletService.findByCustomer(id);
+            if(wallet.getBalance()<amount){
+                org.json.JSONObject option=new org.json.JSONObject();
+                option.put("status","noWallet");
+                return option.toString();
+            }
+            else{
+                orderService.saveOrder(shoppingCart, username, address_id,paymentMethod,amount);
+                walletService.debit(wallet,amount);
+                org.json.JSONObject option=new org.json.JSONObject();
+                option.put("status","wallet");
+                return option.toString();
+            }
+
+        }
+        else{
+            orderService.saveOrder(shoppingCart, username, address_id,paymentMethod,amount);
+            org.json.JSONObject option=new JSONObject();
+            option.put("status","cash");
+            return option.toString();
+        }
+
+
+
     }
 
     @PostMapping("/verify-payment")
@@ -160,10 +155,10 @@ public class OrderController {
         String headervalue = "attachment; filename=pdf_" + currentDateTime + ".pdf";
         response.setHeader(headerkey, headervalue);
 
-//        List<Order> list=orderService.findOrderByCustomer(email);
+       // List<Order> list=orderService.findOrderByCustomer(email);
 
         PdfGenerator pdfGenerator=new PdfGenerator();
-//        pdfGenerator.setOrders(list);
+//       // pdfGenerator.setOrders(list);
         pdfGenerator.generate(response);
     }
 

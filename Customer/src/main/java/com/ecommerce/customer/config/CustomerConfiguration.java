@@ -18,7 +18,6 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableWebSecurity
 public class CustomerConfiguration {
 
-    @Autowired
     private UserDetailsService userDetailsService;
 
 
