@@ -81,7 +81,6 @@ public class OrderController {
                                     @RequestBody Map<String, Object> data) throws RazorpayException{
 
         CustomerDetails customerDetails= (CustomerDetails) authentication.getPrincipal();
-//        System.out.println(customerDetails.toString());
         long id=customerDetails.getCustomer_id();
         String username=principal.getName();
         String paymentMethod = data.get("paymentMethod").toString();
@@ -89,9 +88,16 @@ public class OrderController {
         Double amount= Double.valueOf(data.get("amount").toString());
 
         System.out.println(amount);
+        if (!orderService.isCodAllowed(amount) && paymentMethod.equalsIgnoreCase("cash_on_delivery")) {
+            JSONObject option = new JSONObject();
+            option.put("status", "COD not allowed for orders above Rs 1000");
+            return option.toString();
+        }
+
+        ShoppingCart shoppingCart = new ShoppingCart();
+        orderService.saveOrder(shoppingCart, username, address_id, paymentMethod, amount);
 
         if(paymentMethod.equals("online_payment")) {
-            ShoppingCart shoppingCart = new ShoppingCart();
             orderService.saveOrder(shoppingCart, username, address_id,paymentMethod,amount);
             RazorpayClient client = new RazorpayClient("rzp_test_0KTaWunlL4sKzR", "m8xtLRI9e6sRDuH7vmMvHaGo");
             org.json.JSONObject object = new org.json.JSONObject();
@@ -113,8 +119,7 @@ public class OrderController {
                 return option.toString();
             }
             else{
-                ShoppingCart shopingCart = new ShoppingCart();
-                orderService.saveOrder(shopingCart, username, address_id,paymentMethod,amount);
+                orderService.saveOrder(shoppingCart, username, address_id,paymentMethod,amount);
                 walletService.debit(wallet,amount);
                 org.json.JSONObject option=new org.json.JSONObject();
                 option.put("status","wallet");
@@ -123,9 +128,7 @@ public class OrderController {
 
         }
         else{
-            ShoppingCart shopingCart = new ShoppingCart();
-            orderService.saveOrder(shopingCart, username, address_id,paymentMethod,amount);
-
+            orderService.saveOrder(shoppingCart, username, address_id,paymentMethod,amount);
             org.json.JSONObject option=new JSONObject();
             option.put("status","cash");
             return option.toString();

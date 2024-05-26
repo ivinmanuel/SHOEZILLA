@@ -18,6 +18,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableWebSecurity
 public class CustomerConfiguration {
 
+    @Autowired
     private UserDetailsService userDetailsService;
 
 
@@ -56,10 +57,10 @@ public class CustomerConfiguration {
                                 .permitAll()
                 )
 
-                .oauth2Login(oauth2Login -> oauth2Login
-                        .loginPage("/shop/register")
-                        .defaultSuccessUrl("/home", true)
-                )
+//                .oauth2Login(oauth2Login -> oauth2Login
+//                        .loginPage("/shop/register")
+//                        .defaultSuccessUrl("/home", true)
+//                )
 
                 .logout(logout ->
                         logout.invalidateHttpSession(true)

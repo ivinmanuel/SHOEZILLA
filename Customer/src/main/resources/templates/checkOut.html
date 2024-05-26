@@ -161,11 +161,12 @@
                         </div>
                         <div class="payment_option">
                             <div class="custome-radio">
-                                <input class="form-check-input payment_option" required="" type="radio" name="payment_option" id="exampleRadios3"  th:value="cash">
+                                <input class="form-check-input payment_option" required="" type="radio" name="payment_option" id="exampleRadios3"  th:value="cash_on_delivery">
                                 <label class="form-check-label" for="exampleRadios3" data-bs-toggle="collapse" data-target="#bankTranfer" aria-controls="bankTranfer">Cash on Delivery</label>
                                 <div class="form-group collapse in" id="bankTranfer">
                                     <p class="text-muted mt-5">There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration. </p>
                                 </div>
+                                <div id="codMessage" class="alert alert-danger mt-2" style="display: none;"></div>
                             </div>
                             <div class="custome-radio">
                                 <input class="form-check-input payment_option" required="" type="radio" name="payment_option" id="exampleRadios4" th:value="online_payment">
@@ -225,12 +226,21 @@
         console.log(amount1);
         console.log(paymentMethod);
 
+        $('#codMessage').hide().text('');
+
         if (checkedAddress === undefined) {
             alert("Please choose a shipping address!!");
         } else {
             const addressId = checkedAddress;
             const payment_Method = paymentMethod;
             let amount = amount1;
+
+            // Check if the payment method is COD and the amount exceeds Rs 1000
+            if (payment_Method === "cash_on_delivery" && amount > 1000) {
+                $('#codMessage').text("Cash on Delivery is not available for orders above Rs 1000.").show();
+                return; // Prevent further execution
+            }
+
             paymentStart(addressId, payment_Method, amount);
         }
     }
@@ -240,9 +250,8 @@
         console.log(paymentMethod);
         console.log(amount);
 
-        // Only proceed if payment method is "cash"
-        if (paymentMethod === "cash") {
-            // Call your AJAX request here for cash on delivery
+        // Handle payment method specific actions
+        if (paymentMethod === "cash_on_delivery") {
             $.ajax({
                 url: '/shop/createPayment',
                 data: JSON.stringify({
@@ -267,11 +276,14 @@
                     alert("Something went wrong!!");
                 }
             });
-        }
-
-        $.ajax({
+        } else {
+            $.ajax({
                 url: '/shop/createPayment',
-                data: JSON.stringify({addressId: addressId, paymentMethod: paymentMethod,amount:amount}),
+                data: JSON.stringify({
+                    addressId: addressId,
+                    paymentMethod: paymentMethod,
+                    amount: amount
+                }),
                 contentType: 'application/json',
                 type: 'POST',
                 dataType: 'json',
@@ -279,30 +291,29 @@
                     'X-CSRF-TOKEN': $('[name="_csrf"]').attr('content')
                 },
                 success: function (response) {
-                    console.log(response)
-                    if(response.status=="created"){
-                        let options={
-                            key:'rzp_test_0KTaWunlL4sKzR',
-                            amount:response.amount,
-                            currency:'INR',
-                            name:'My Shoe store Ecommerce',
-                            description:'Purchase order',
-                            order_id:response.id,
-                            handler:function (response){
+                    console.log(response);
+                    if (response.status === "created") {
+                        let options = {
+                            key: 'rzp_test_0KTaWunlL4sKzR',
+                            amount: response.amount,
+                            currency: 'INR',
+                            name: 'My Shoe store Ecommerce',
+                            description: 'Purchase order',
+                            order_id: response.id,
+                            handler: function (response) {
                                 console.log(response.razorpay_payment_id);
                                 console.log(response.razorpay_order_id);
                                 console.log(response.razorpay_signature);
 
-                                location.href='/shop/orderConfirm';
+                                location.href = '/shop/orderConfirm';
                             },
-
-                            prefill:{
-                                name:"",
-                                email:"",
-                                contact:""
+                            prefill: {
+                                name: "",
+                                email: "",
+                                contact: ""
                             },
-                            notes:{
-                                address:"My Payment"
+                            notes: {
+                                address: "My Payment"
                             },
                             theme: {
                                 color: "#3399cc"
@@ -310,7 +321,7 @@
                         };
                         var rzp1 = new Razorpay(options);
                         rzp1.open();
-                        rzp1.on('payment.failed', function (response){
+                        rzp1.on('payment.failed', function (response) {
                             console.log(response.error.code);
                             console.log(response.error.description);
                             console.log(response.error.source);
@@ -319,28 +330,22 @@
                             console.log(response.error.metadata.order_id);
                             console.log(response.error.metadata.payment_id);
 
-                            alert("Failed!! Oops Payment failed.Please try after some time");
+                            alert("Failed!! Oops Payment failed. Please try after some time");
                         });
-                    }
-                    else if(response.status==="cash"){
-                        location.href='/shop/orderConfirm';
-                    }
-                    else if(response.status==="noWallet") {
-                        alert("wallet amount is less");
-
-                    }
-                    else if(response.status==="wallet"){
-                        location.href='/shop/orderConfirm';
+                    } else if (response.status === "cash") {
+                        location.href = '/shop/orderConfirm';
+                    } else if (response.status === "noWallet") {
+                        alert("Wallet amount is less");
+                    } else if (response.status === "wallet") {
+                        location.href = '/shop/orderConfirm';
                     }
                 },
                 error: function (error) {
-                    console.log(error)
-                    alert("something went wrong!!")
+                    console.log(error);
+                    alert("Something went wrong!!");
                 }
-
-            }
-        )
-
+            });
+        }
     }
 </script>
 

@@ -13,7 +13,9 @@ import java.util.Date;
 import java.util.List;
 
 public interface OrderService {
-    Order saveOrder(ShoppingCart shoppingCart, String email, Long addressId, String paymentMethod, Double grandTotel);
+   Order saveOrder(ShoppingCart shoppingCart, String email, Long addressId, String paymentMethod, Double grandTotal);
+
+
     List<OrderDetails> findAllOrder();
 
     List<OrderDetails> findOrderDetailsByCustomer(String email);
@@ -46,5 +48,7 @@ public interface OrderService {
     List<Monthlyearning> getMonthlyReport(int year);
     List<DailyEarning> dailyReport(int year, int month);
     List<WeeklyEarnings> findWeeklyEarnings(int year);
+
+    boolean isCodAllowed(Double grandTotal);
 
 }

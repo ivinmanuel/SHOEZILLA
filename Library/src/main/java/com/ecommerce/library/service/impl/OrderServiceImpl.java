@@ -55,15 +55,19 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order saveOrder(ShoppingCart shoppingCart, String email, Long addressId, String paymentMethod,
-                           Double grandTotel) {
+    public Order saveOrder(ShoppingCart shoppingCart, String email, Long addressId, String paymentMethod, Double grandTotal) {
+
+        if (paymentMethod.equalsIgnoreCase("cash_on_delivery") && grandTotal > 1000){
+            throw new IllegalArgumentException("Cash on Delivery is not allowed for orders above Rs 1000.");
+        }
+
 
         Order order = new Order();
         order.setOrderDate(new Date());
         order.setOrderStatus("Pending");
 
         order.setCustomer(customerRepository.findByEmail(email));
-        order.setGrandTotalPrize(grandTotel);
+        order.setGrandTotalPrize(grandTotal);
         order.setPaymentMethod(paymentMethod);
 
         order.setShippingAddress(addressRepository.getReferenceById(addressId));
@@ -86,6 +90,11 @@ public class OrderServiceImpl implements OrderService {
         }
 
         return order;
+    }
+
+    @Override
+    public boolean isCodAllowed(Double grandTotal) {
+        return grandTotal <= 1000;
     }
 
     @Override
