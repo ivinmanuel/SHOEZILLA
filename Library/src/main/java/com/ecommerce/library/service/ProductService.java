@@ -5,6 +5,7 @@ import com.ecommerce.library.model.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Date;
 import java.util.List;
 
 public interface ProductService {
@@ -29,43 +30,23 @@ public interface ProductService {
     List<ProductDto> findAllProducts();
 
 
-
-
-//     Optional<Product> findBYId(Long id);
-
-
-
-    // List<ProductDto> products();
-
-    //List<ProductDto> allProduct();
-
-    // List<ProductDto> findAllByOrderDesc();
-
-
-
-
-
-    // List<ProductDto> randomProduct();
-
-
-    // Page<ProductDto> getAllProducts(int pageNo);
-
-    // Page<ProductDto> getAllProductsForCustomer(int pageNo);
-
-    //List<ProductDto> findAllByCategory(String category);
-
      List<ProductDto> filterHighProducts();
 
      List<ProductDto> filterLowerProducts();
 
      List<ProductDto> listViewProducts();
 
-    // List<ProductDto> findByCategoryId(Long id);
-
-  //  Page<Product> searchProductsList(String keyword);
-
-//    List<Product> findProductsByCategory(long id);
 
     List<Product> findAllByCategory(long id);
+
+
+    long countTotalProducts();
+
+    List<Object[]> getProductStats();
+
+    List<Object[]> getProductsStatsBetweenDates(Date startDate,Date endDate);
+
+
+
 
 }

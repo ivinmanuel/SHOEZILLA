@@ -75,4 +75,25 @@ public interface OrderRepository extends JpaRepository<Order,Long> {
 
     @Query("select o from Order o where o.id = :orderId and o.customer.email = :email")
     Order findOrderByIdAndCustomerEmail(@Param("orderId") Long orderId, @Param("email") String email);
+
+    @Query(value = "select COALESCE(SUM(o.grandTotalPrize),0) FROM Order o where o.orderStatus = 'Delivered'")
+    Double getTotalConfirmedOrdersAmount();
+
+    @Query(value = "SELECT COALESCE(SUM(grand_total_prize), 0) " +
+            "FROM orders " +
+            "WHERE order_date BETWEEN :startDate AND :endDate " +
+            "AND order_status = :orderStatus", nativeQuery = true)
+    Double getTotalConfirmedOrdersAmountForMonth(@Param("startDate") LocalDate startDate,
+                                                 @Param("endDate") LocalDate endDate,
+                                                 @Param("orderStatus") String orderStatus);
+
+    @Query(value = "SELECT COUNT(*) " +
+            "FROM orders " +
+            "WHERE order_date BETWEEN :startDate AND :endDate " +
+            "AND order_status = :orderStatus", nativeQuery = true)
+    Long countByOrderDateBetweenAndOrderStatus(@Param("startDate") LocalDate startDate,
+                                               @Param("endDate") LocalDate endDate,
+                                               @Param("orderStatus") String orderStatus);
+
+
 }

@@ -54,4 +54,11 @@ public interface OrderService {
 
     boolean isCodAllowed(Double grandTotal);
 
+
+    Double getTotalOrderAmount();
+
+    Double getTotalAmountForMonth();
+
+    List<Long> findAllOrderCountForEachMonth();
+    List<Double> getTotalAmountForEachMonth();
 }

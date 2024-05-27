@@ -175,6 +175,11 @@ public class OrderServiceImpl implements OrderService {
         orderRepository.save(order);
     }
 
+    @Override
+    public Double getTotalOrderAmount() {
+
+        return orderRepository.getTotalConfirmedOrdersAmount();
+    }
 
 
     @Override
@@ -279,6 +284,54 @@ public class OrderServiceImpl implements OrderService {
 
         }
         return report;
+    }
+
+    @Override
+    public Double getTotalAmountForMonth() {
+        LocalDate currentDate = LocalDate.now();
+        LocalDate startDate=currentDate.withDayOfMonth(1);
+        LocalDate endDate=currentDate.withDayOfMonth(currentDate.lengthOfMonth());
+        Double totalAmount = orderRepository.getTotalConfirmedOrdersAmountForMonth(startDate,endDate,"Delivered");
+
+        return totalAmount;
+    }
+
+    @Override
+    public List<Long> findAllOrderCountForEachMonth() {
+        List<Long>orderCounts=new ArrayList<>();
+        LocalDate currentDate = LocalDate.now().withMonth(1);
+
+        for(int i=0 ; i < 12 ; i++){
+            LocalDate localStartDate=currentDate.withDayOfMonth(1);
+            LocalDate localEndDate=currentDate.withDayOfMonth(currentDate.lengthOfMonth());
+
+            long orderCount= orderRepository.countByOrderDateBetweenAndOrderStatus(localStartDate,localEndDate,"Delivered");
+            orderCounts.add(orderCount);
+            currentDate = currentDate.plusMonths(1);
+
+        }
+
+
+        return orderCounts;
+    }
+
+    @Override
+    public List<Double> getTotalAmountForEachMonth() {
+
+        List<Double> totalRevenuePerMonth = new ArrayList<>();
+        LocalDate currentDate = LocalDate.now().withMonth(1);
+
+        for(int i=0 ; i < 12 ; i++){
+            LocalDate localStartDate=currentDate.withDayOfMonth(1);
+            LocalDate localEndDate=currentDate.withDayOfMonth(currentDate.lengthOfMonth());
+
+            Double totalRevenue = orderRepository.getTotalConfirmedOrdersAmountForMonth(localStartDate,localEndDate,"Delivered");
+            totalRevenuePerMonth.add(totalRevenue);
+            currentDate = currentDate.plusMonths(1);
+
+        }
+
+        return totalRevenuePerMonth;
     }
 }
 

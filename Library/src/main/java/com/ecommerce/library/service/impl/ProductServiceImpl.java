@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 @Service
 @RequiredArgsConstructor
@@ -239,89 +240,12 @@ public class ProductServiceImpl implements ProductService {
 
 
 
-//    @Override
-//    public List<ProductDto> products() {
-//        return transferData(productRepository.getAllProduct());
-//    }
-//
-//    @Override
-//    public List<ProductDto> allProduct() {
-//        List<Product> products = productRepository.getAllProduct();
-//        List<ProductDto> productDto = transferData(products);
-//        return productDto;
-//    }
-//
-//    @Override
-//    public List<ProductDto> findAllByOrderDesc() {
-//        List<Product> products = productRepository.findAllByOrderById();
-//        List<ProductDto> productDtos = transferData(products);
-//        return productDtos;
-//    }
-
-
-//    @Override
-//    public Optional<Product> findBYId(Long id) {
-//        return productRepository.findById(id);
-//    }
-
-//    @Override
-//    public List<ProductDto> randomProduct() {
-//        return transferData(productRepository.randomProduct());
-//    }
-
-//    @Override
-//    public Page<ProductDto> getAllProducts(int pageNo) {
-//        Pageable pageable = PageRequest.of(pageNo, 6);
-//        List<ProductDto> productDtoLists = this.allProduct();
-//        Page<ProductDto> productDtoPage = toPage(productDtoLists, pageable);
-//        return productDtoPage;
-//    }
-//
-//    @Override
-//    public Page<ProductDto> getAllProductsForCustomer(int pageNo) {
-//        return null;
-//    }
-//
-//    @Override
-//    public List<ProductDto> findAllByCategory(String category) {
-//        return transferData(productRepository.findAllByCategory(category));
-//    }
-//
 
 
     @Override
     public List<ProductDto> listViewProducts() {
         return transferData(productRepository.listViewProduct());
     }
-//
-//    @Override
-//    public List<ProductDto> findByCategoryId(Long id) {
-//        return transferData(productRepository.getProductByCategoryId(id));
-//    }
-//
-
-//    @Override
-//    public List<ProductDto> searchProductsList(String keyword) {
-//        return transferData(productRepository.searchProductsList(keyword));
-//    }
-
-
-//
-//    @Override
-//    public List<Product> findProductsByCategory(long id) {
-//        return productRepository.findAllByCategoryId(id);
-//    }
-
-//    @Override
-//    public Page<ProductDto> searchProducts(int pageNo, String keyword) {
-//        List<Product> product= productRepository.findAllByNameOrDescription(keyword);
-//        Pageable pageable = PageRequest.of(pageNo, 5);
-//        List<ProductDto> productDtoList = transferData(productRepository.searchProductsList(keyword));
-//        Page<ProductDto> products=toPage(productDtoList,pageable);
-//        return products;
-//        Page<ProductDto> dtoPage = toPage(productDtoList, pageable);
-//        return dtoPage;
-//    }
 
 
 
@@ -370,6 +294,21 @@ public class ProductServiceImpl implements ProductService {
         return imageRepository.existsByNameAndProductId(imageName, productId);
     }
 
+    @Override
+    public long countTotalProducts() {
+        return productRepository.count();
+    }
+
+
+    @Override
+    public List<Object[]> getProductStats() {
+        return productRepository.getProductStatsForConfirmedOrders();
+    }
+
+    @Override
+    public List<Object[]> getProductsStatsBetweenDates(Date startDate, Date endDate) {
+        return productRepository.getProductsStatsForConfirmedOrdersBetweenDates(startDate,endDate);
+    }
 
 
 }

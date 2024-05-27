@@ -81,6 +81,12 @@ public class CategoryServiceImpl implements CategoryService {
         return categories;
     }
 
+
+    @Override
+    public long countTotalCategories() {
+        return categoryRepository.count();
+    }
+
 }
 
 
