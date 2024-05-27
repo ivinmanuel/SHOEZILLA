@@ -42,39 +42,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
 
-//    @Override
-//    public Product save(List<MultipartFile> imageProducts, ProductDto productDto) {
-//        Product product = new Product();
-//        try {
-//            product.setName(productDto.getName());
-//            product.setDescription(productDto.getDescription());
-//            product.setLong_description(productDto.getLong_description());
-//            product.setCurrentQuantity(productDto.getCurrentQuantity());
-//            product.setCostPrice(productDto.getCostPrice());
-//            product.setSalePrice(productDto.getSalePrice());
-//            product.setCategory(productDto.getCategory());
-//            product.set_activated(true);
-//            Product savedProduct = productRepository.save(product);
-//            if (imageProducts == null) {
-//                product.setImage(null);
-//            } else {
-//                List<Image> imagesList = new ArrayList<>();
-//                for (MultipartFile imageProduct : imageProducts) {
-//                    Image image = new Image();
-//                    String imageName = imageUpload.storeFile(imageProduct);
-//                    image.setName(imageName);
-//                    image.setProduct(product);
-//                    imageRepository.save(image);
-//                    imagesList.add(image);
-//                }
-//                product.setImage(imagesList);
-//            }
-//            return productRepository.save(product);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return null;
-//        }
-//    }
+
 
 
     @Override
@@ -314,6 +282,13 @@ public class ProductServiceImpl implements ProductService {
     public Product findById(Long id) {
         return productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
+
+    }
+
+
+    @Override
+    public List<Object[]> findTopSellingProducts(Pageable pageable) {
+        return productRepository.findTopSellingProducts(pageable);
     }
 
 }

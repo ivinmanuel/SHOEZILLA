@@ -2,6 +2,7 @@ package com.ecommerce.library.service;
 
 import com.ecommerce.library.dto.CategoryDto;
 import com.ecommerce.library.model.Category;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,4 +28,10 @@ public interface CategoryService {
 
 
     Category findCategoryById(Long id);
+
+
+
+    List<Object[]> findTopSellingCategories(Pageable pageable);
+
+
 }

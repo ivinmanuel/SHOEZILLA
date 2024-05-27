@@ -7,6 +7,8 @@ import com.ecommerce.library.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -91,6 +93,11 @@ public class CategoryServiceImpl implements CategoryService {
     public Category findCategoryById(Long id) {
         return categoryRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Category not found"));
+    }
+
+    @Override
+    public List<Object[]> findTopSellingCategories(Pageable pageable) {
+        return categoryRepository.findTopSellingCategories(pageable);
     }
 
 }

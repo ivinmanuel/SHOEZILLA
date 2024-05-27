@@ -95,4 +95,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             "ORDER BY total_revenue DESC", nativeQuery = true)
     List<Object[]> getProductsStatsForConfirmedOrdersBetweenDates(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
 
+    @Query("SELECT p.id, p.name, c.name, SUM(od.quantity), SUM(od.totalPrice) FROM Product p JOIN p.category c JOIN OrderDetails od ON p.id = od.product.id GROUP BY p.id, p.name, c.name ORDER BY SUM(od.quantity) DESC")
+    List<Object[]> findTopSellingProducts(Pageable pageable);
 }

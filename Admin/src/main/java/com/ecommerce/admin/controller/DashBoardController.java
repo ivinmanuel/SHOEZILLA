@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -76,6 +77,13 @@ public class DashBoardController {
         addPieChartData(model);
 
         setFilteredData(model, filter, startDate, endDate);
+
+        // Add top 5 products and categories
+        List<Object[]> topProducts = productService.findTopSellingProducts(PageRequest.of(0, 5));
+        List<Object[]> topCategories = categoryService.findTopSellingCategories(PageRequest.of(0, 5));
+
+        model.addAttribute("topProducts", topProducts);
+        model.addAttribute("topCategories", topCategories);
 
         session.setAttribute("userLoggedIn", true);
         return "index";
