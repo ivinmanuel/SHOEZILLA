@@ -310,5 +310,10 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.getProductsStatsForConfirmedOrdersBetweenDates(startDate,endDate);
     }
 
+    @Override
+    public Product findById(Long id) {
+        return productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+    }
 
 }

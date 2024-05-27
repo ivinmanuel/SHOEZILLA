@@ -24,4 +24,7 @@ public interface CategoryService {
     List<CategoryDto> getCategoriesAndSize();
 
     long countTotalCategories();
+
+
+    Category findCategoryById(Long id);
 }

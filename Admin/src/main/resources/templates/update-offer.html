@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org/">
+<head th:replace="~{fragments::header_sec}"></head>
+<body>
+
+<div class="screen-overlay"></div>
+<div th:replace="~{fragments::side_bar}"></div>
+
+<main class="main-wrap mt-50">
+  <div th:replace="~{fragments::nav_bar}"></div>
+
+  <div class="container mt-10 p-30">
+    <!-- <div th:if="${error}" class="alert alert-danger">
+          <strong th:text="${'Offer ' + offerName + ' already exist!'}">Danger!</strong>
+        </div> -->
+
+    <section class="content-main">
+      <div class="row">
+        <div class="col-9">
+          <div class="content-header">
+            <h2 class="content-title">Update Offer</h2>
+            <div>
+              <!-- <button class="btn btn-light rounded font-sm mr-5 text-body hover-up">Save to draft</button>
+               <button class="btn btn-md rounded font-sm hover-up">Publish</button> -->
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-9">
+          <div class="card mb-4">
+            <div class="card-header">
+              <h4>Offer Details</h4>
+            </div>
+            <div class="card-body">
+              <form th:action="@{/offers/update-offer/{id}}" th:object="${offer}" method="post">
+                <input type="hidden" th:field="*{id}" th:value="${offer.id}" />
+                <div class="mb-4">
+                  <label class="form-label">Offer Name</label>
+                  <input type="text" th:field="*{name}" name="name" class="form-control" required />
+                </div>
+                <div class="mb-4">
+                  <label class="form-label">Description</label>
+                  <input type="text" th:field="*{description}" name="description" class="form-control" required />
+                </div>
+                <div class="mb-4">
+                  <label class="form-label">Discount (%)</label>
+                  <input type="number" th:field="*{discount}" name="discount" class="form-control" required />
+                </div>
+
+                <div class="mb-4">
+                  <label class="form-label">Offer Type</label>
+                  <select onchange="typeSelection()" class="form-control" id="offerType" name="offerType">
+                    <option th:value="null" th:selected="${offer.product != null || offer.category != null}">Select Option</option>
+                    <option th:value="Product" th:selected="${offer.product != null}">Product</option>
+                    <option th:value="Category" th:selected="${offer.category != null}">Category</option>
+                  </select>
+                </div>
+
+                <div class="mb-4" id="productSelect" th:if="${offer.product != null}">
+                  <label class="form-label">Product</label>
+                  <select id="offerProduct" name="offerProductId" class="form-control">
+                    <option selected disabled value="">Select a product</option>
+                    <th:block th:each="product : ${products}">
+                      <option th:value="${offer.product.id}" th:selected="${offer.product.id == offer.product.id}" th:text="${offer.product.name}"></option>
+                    </th:block>
+                  </select>
+                </div>
+
+                <div class="mb-4" id="categorySelect" th:if="${offer.category != null}">
+                  <label class="form-label">Category</label>
+                  <select id="offerCategory" name="offerCategoryId" class="form-control">
+                    <option selected value="">Select a category</option>
+                    <th:block th:each="category : ${categories}">
+                      <option th:value="${offer.category.id}" th:selected="${offer.category.id == offer.category.id}" th:text="${offer.category.name}"></option>
+                    </th:block>
+                  </select>
+                </div>
+                <div class="mb-4 form-check">
+                  <input type="checkbox" class="form-check-input" th:field="*{activated}" id="activated" name="activated" th:checked="${offer.activated}">
+                  <label class="form-check-label" for="activated">Activate Offer</label>
+                </div>
+
+
+                <button class="btn btn-primary" type="submit">Save</button>
+              </form>
+            </div>
+          </div> <!-- card end// -->
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<script src="/admin/js/vendors/jquery-3.6.0.min.js"></script>
+<script src="/admin/js/vendors/bootstrap.bundle.min.js"></script>
+<script src="/admin/js/vendors/select2.min.js"></script>
+<script src="/admin/js/vendors/perfect-scrollbar.js"></script>
+<script src="/admin/js/vendors/jquery.fullscreen.min.js"></script>
+<script src="/admin/js/vendors/chart.js"></script>
+<!-- Main Script -->
+<script src="/admin/js/main.js" type="text/javascript"></script>
+<script src="/admin/js/custom-chart.js" type="text/javascript"></script>
+<script>
+  function typeSelection() {
+    const type = document.getElementById("offerType").value;
+    const productSelect = document.getElementById("productSelect");
+    const categorySelect = document.getElementById("categorySelect");
+
+    if (type === "Product") {
+      productSelect.hidden = false;
+      categorySelect.hidden = true;
+    } else if (type === "Category") {
+      productSelect.hidden = true;
+      categorySelect.hidden = false;
+    } else {
+      productSelect.hidden = true;
+      categorySelect.hidden = true;
+    }
+  }
+
+  // Initial call to set visibility based on the current offer type
+  document.addEventListener("DOMContentLoaded", typeSelection);
+</script>
+
+</body>
+</html>

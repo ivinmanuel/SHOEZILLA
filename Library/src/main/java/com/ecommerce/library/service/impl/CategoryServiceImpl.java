@@ -87,6 +87,12 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryRepository.count();
     }
 
+    @Override
+    public Category findCategoryById(Long id) {
+        return categoryRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Category not found"));
+    }
+
 }
 
 
