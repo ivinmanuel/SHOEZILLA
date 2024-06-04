@@ -131,8 +131,8 @@
                             <th>Status</th>
                             <th>Total
                             <th>Payment Method</th>
+                            <th>Payment Status</th>
                             <th>Actions</th>
-                            <th>invoice</th>
                           </tr>
                           </thead>
                           <tbody>
@@ -143,19 +143,17 @@
                             <td th:text="${orderDetail.order.orderStatus}"></td>
                             <td th:text="${orderDetail.order.grandTotalPrize}">$</td>
                             <td th:text="${orderDetail.order.paymentMethod}"></td>
+                            <td th:text="${orderDetail.order.paymentStatus}"></td>
                             <td>
-                              <a href="#orders" class="btn-danger" th:if="${orderDetail.order.orderStatus=='Pending' || orderDetail.order.orderStatus=='Shipped'}" th:href="@{/cancelOrder(orderId=${orderDetail.order.id})}"
-                                 onclick="if (!confirm('Are you sure want to Cancel This item'))return false">Cancel</a>
-                              <a href="#orders" class="btn-success" th:if="${orderDetail.order.orderStatus=='Cancel'}">Cancelled</a>
-<!--                              <a class="btn-danger"  th:if="${orderDetail.order.orderStatus=='Delivered'}" th:href="@{/returnOrder(orderId=${orderDetail.id})}"-->
-<!--                                 onclick="if (!confirm('Are you sure want to Return This item'))return false">-->
-<!--                                Return</a>-->
-                              <a th:if="${orderDetail.order.orderStatus !='Cancel'}" th:href="@{/orderDetails(orderId=${orderDetail.order.id})}" class="btn-small d-block">View</a></td>
-                            <td>
-                              <a aria-label="Download" class="btn hover-up" th:if="${orderDetail.order.orderStatus != 'Cancel'}" th:href="@{/generateInvoice(orderId=${orderDetail.order.id})}">
-                                <i class="fi-rs-download"></i>
-                              </a>
+                              <a href="#orders" class="btn-danger" th:if="${orderDetail.order.orderStatus == 'Pending' || orderDetail.order.orderStatus == 'Shipped'}" th:unless="${orderDetail.order.paymentStatus == 'Payment Pending'}" th:href="@{/cancelOrder(orderId=${orderDetail.order.id})}" onclick="if (!confirm('Are you sure want to Cancel This item')) return false">Cancel</a>
+                              <a href="#orders" class="btn-success" th:if="${orderDetail.order.orderStatus == 'Cancel'}">Cancelled</a>
+                              <a th:if="${orderDetail.order.orderStatus != 'Cancel'}" th:href="@{/orderDetails(orderId=${orderDetail.order.id})}" class="btn-small d-block">View</a>
                             </td>
+<!--                            <td>-->
+<!--                              <a aria-label="Download" class="btn hover-up" th:if="${orderDetail.order.orderStatus != 'Cancel'}" th:href="@{/generateInvoice(orderId=${orderDetail.order.id})}">-->
+<!--                                <i class="fi-rs-download"></i>-->
+<!--                              </a>-->
+<!--                            </td>-->
 
                           </tr>
 

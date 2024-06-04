@@ -23,52 +23,55 @@
 
                 <div class="card">
                     <div class="card-header">
-                        <a  th:href="@{/order?pageNo=0}"> Back</a>
+                        <a th:href="@{/order?pageNo=0}"> Back</a>
                         <h5 class="mb-0">Your Orders</h5>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table">
+                            <table class="table" th:each="orderDetail : ${orderDetails}" >
                                 <thead>
                                 <tr>
                                     <th>Order</th>
                                     <th>Product</th>
-                                    <th>Product Discription</th>
-                                    <th>Unit Pize</th>
+                                    <th>Product Description</th>
+                                    <th>Unit Price</th>
                                     <th>Quantity</th>
-                                    <th>Total Prize</th>
-                                    <th>Invoice</th>
-
+                                    <th>Total Price</th>
+                                    <th>Payment Status</th>
+                                    <th th:if="${orderDetail.order.paymentStatus != 'Payment Pending'}">Invoice</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr th:each="orderDetail:${orderDetails}">
+                                <tr th:each="orderDetail : ${orderDetails}">
                                     <td th:text="${orderDetail.order.id}">#</td>
 
-                                    <td >
+                                    <td>
                                         <img th:if="${not #lists.isEmpty(orderDetail.product.image)}"
                                              th:src="@{|/imgs/items/${orderDetail.product.image[0].getName()}|}" width="40" height="40" class="img-xs" alt="Item"> <br>
                                         <span th:text="${orderDetail.product.name}"></span>
                                     </td>
                                     <td th:text="${orderDetail.product.description}"></td>
                                     <td th:text="${orderDetail.unitPrice}"></td>
-                                    <td th:text="${orderDetail.quantity}">$</td>
-                                    <td th:text="${orderDetail.totalPrice}">$</td>
-<!--                                    <td th:if="${orderDetail.order.orderStatus=='Delivered'}">-->
-<!--                                        <a class="btn btn-primary" th:href="@{/showReviewPage(productId=${orderDetail.product.id})}">Add Review</a>-->
-<!--                                    </td>-->
-                                    <td>
+                                    <td th:text="${orderDetail.quantity}"></td>
+                                    <td th:text="${orderDetail.totalPrice}"></td>
+                                    <td th:text="${orderDetail.order.paymentStatus}"></td>
+                                    <td th:if="${orderDetail.order.paymentStatus != 'Payment Pending'}">
                                         <a aria-label="Download" class="btn hover-up" th:if="${orderDetail.order.orderStatus != 'Cancel'}" th:href="@{/generateInvoice(orderId=${orderDetail.order.id})}">
                                             <i class="fi-rs-download"></i>
                                         </a>
                                     </td>
+                                    <td th:if="${orderDetail.order.paymentStatus == 'Payment Pending'}">
+                                        <a aria-label="Pay Now" class="btn btn-primary" th:href="@{/checkOut(orderId=${orderDetail.order.id})}">
+                                            Pay Now
+                                        </a>
+                                    </td>
                                 </tr>
-
                                 </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </section>

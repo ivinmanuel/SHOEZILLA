@@ -9,6 +9,8 @@ import com.ecommerce.library.model.Product;
 import com.ecommerce.library.model.ShoppingCart;
 import com.ecommerce.library.repository.*;
 import com.ecommerce.library.service.*;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,56 +24,37 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
-    private OrderRepository orderRepository;
-    private OrderDetailsRepository orderDetailsRepository;
-    private CustomerRepository customerRepository;
-    private ShopingCartRepository shopingCartRepository;
 
-    private AddressService addressService;
+    private final OrderRepository orderRepository;
+    private final OrderDetailsRepository orderDetailsRepository;
+    private final CustomerRepository customerRepository;
+    private final ShopingCartRepository shopingCartRepository;
+    private final ProductRepository productRepository;
+    private final AddressRepository addressRepository;
 
-    private ShoppingCartService shopCartService;
-    private ProductRepository productRepository;
-    private AddressRepository addressRepository;
 
-    private WalletService walletService;
-    private CustomerService customerService;
 
-    @Autowired
-    public OrderServiceImpl(OrderRepository orderRepository, OrderDetailsRepository orderDetailsRepository,
-                            CustomerRepository customerRepository, ShopingCartRepository shopingCartRepository,
-                            AddressService addressService, ShoppingCartService shopCartService,
-                            ProductRepository productRepository, AddressRepository addressRepository,WalletService walletService,CustomerService customerService) {
-        this.orderRepository = orderRepository;
-        this.orderDetailsRepository = orderDetailsRepository;
-        this.customerRepository = customerRepository;
-        this.shopingCartRepository = shopingCartRepository;
-        this.addressService = addressService;
-        this.shopCartService = shopCartService;
-        this.productRepository = productRepository;
-        this.addressRepository = addressRepository;
-        this.walletService = walletService;
-        this.customerService = customerService;
-    }
+
 
     @Override
+    @Transactional
     public Order saveOrder(ShoppingCart shoppingCart, String email, Long addressId, String paymentMethod, Double grandTotal) {
-
-        if (paymentMethod.equalsIgnoreCase("cash_on_delivery") && grandTotal > 1000){
+        if (paymentMethod.equalsIgnoreCase("cash_on_delivery") && grandTotal > 1000) {
             throw new IllegalArgumentException("Cash on Delivery is not allowed for orders above Rs 1000.");
         }
-
 
         Order order = new Order();
         order.setOrderDate(new Date());
         order.setOrderStatus("Pending");
-
+        order.setPaymentStatus("Pending");  // Initial payment status
         order.setCustomer(customerRepository.findByEmail(email));
         order.setGrandTotalPrize(grandTotal);
         order.setPaymentMethod(paymentMethod);
-
         order.setShippingAddress(addressRepository.getReferenceById(addressId));
         orderRepository.save(order);
+
         List<ShoppingCart> shoppingCarts = shopingCartRepository.findShoppingCartByCustomer(email);
         for (ShoppingCart cart : shoppingCarts) {
             OrderDetails orderDetails = new OrderDetails();
@@ -81,16 +64,19 @@ public class OrderServiceImpl implements OrderService {
             orderDetails.setUnitPrice(cart.getUnitPrice());
             orderDetails.setTotalPrice(cart.getTotalPrice());
             orderDetailsRepository.save(orderDetails);
+
             Product product = cart.getProduct();
             int quantity = product.getCurrentQuantity() - cart.getQuantity();
             product.setCurrentQuantity(quantity);
             productRepository.save(product);
+
             cart.setDeleted(true);
             shopingCartRepository.save(cart);
         }
 
         return order;
     }
+
 
     @Override
     public boolean isCodAllowed(Double grandTotal) {
@@ -150,7 +136,7 @@ public class OrderServiceImpl implements OrderService {
 
         Order order = orderRepository.getReferenceById(id);
         order.setOrderStatus("Cancel");
-
+        order.setPaymentStatus("Order Cancelled");
         orderRepository.save(order);
         List<OrderDetails> orderDetails=orderDetailsRepository.findByOrderId(id);
         for(OrderDetails orders:orderDetails){

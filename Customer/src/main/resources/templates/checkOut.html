@@ -28,7 +28,7 @@
                 </div>
             </div>
             <div th:if="${errorMessage}">
-                <p class = "alert alert-danger" th:text = "${errorMessage}"></p>
+                <p class="alert alert-danger" th:text="${errorMessage}"></p>
             </div>
             <div th:if="${param.expired}">
                 <div class="alert alert-danger"> !</div>
@@ -51,10 +51,13 @@
                                 </thead>
                                 <tbody>
                                 <tr th:each="checkOut :${cartItem}">
-                                    <td class="image product-thumbnail"><img th:if="${not #lists.isEmpty(checkOut.product.image)}"
-                                                                             th:src="@{|/imgs/items/${checkOut.product.image[0].getName()}|}" alt="#"></td>
+                                    <td class="image product-thumbnail"><img
+                                            th:if="${not #lists.isEmpty(checkOut.product.image)}"
+                                            th:src="@{|/imgs/items/${checkOut.product.image[0].getName()}|}" alt="#">
+                                    </td>
                                     <td>
-                                        <h5><a href="shop-product-full.html" th:object="${checkOut.product.name}"></a></h5> <span class="product-qty" th:text="${checkOut.quantity}"></span>
+                                        <h5><a href="shop-product-full.html" th:object="${checkOut.product.name}"></a>
+                                        </h5> <span class="product-qty" th:text="${checkOut.quantity}"></span>
                                     </td>
                                     <td th:text="${checkOut.totalPrice}">$</td>
                                 </tr>
@@ -62,7 +65,7 @@
 
                                 <tr>
                                     <th>SubTotal</th>
-                                    <td class="product-subtotal"  colspan="2" th:text="${total}">$</td>
+                                    <td class="product-subtotal" colspan="2" th:text="${total}">$</td>
                                 </tr>
                                 <tr>
                                     <th>Shipping</th>
@@ -75,44 +78,53 @@
                                 <tr>
                                 <tr>
                                     <th>Total</th>
-                                    <td colspan="2" class="product-subtotal"><span class="font-xl text-brand fw-900 payment_field" id="payment_field" th:text="${payable}" th:value="${payable}">$</span></td>
+                                    <td colspan="2" class="product-subtotal"><span
+                                            class="font-xl text-brand fw-900 payment_field" id="payment_field"
+                                            th:text="${payable}" th:value="${payable}">$</span></td>
                                 </tr>
                                 </tbody>
                             </table>
                         </div>
                         <div class="bt-1 border-color-1 mt-30 mb-30"></div>
                         <div class="toggle_info mt-20">
-                            <span><i class="fi-rs-label mr-10"></i><span class="text-muted">Have a coupon?</span> <a href="#coupon" data-bs-toggle="collapse" class="collapsed" aria-expanded="false">Click here to enter your code</a></span>
+                            <span><i class="fi-rs-label mr-10"></i><span class="text-muted">Have a coupon?</span> <a
+                                    href="#coupon" data-bs-toggle="collapse" class="collapsed" aria-expanded="false">Click here to enter your code</a></span>
                         </div>
                         <div class="panel-collapse collapse coupon_form" id="coupon">
                             <div class="panel-body">
                                 <p class="mb-30 font-sm">If you have a coupon code, please apply it below.</p>
                                 <form th:action="@{/applyCoupon}" th:object="${coupon}" th:method="post">
                                     <div class="form-group">
-                                        <input type="text" th:value="${param.couponcode}" placeholder="Enter Coupon Code..." name="couponcode">
+                                        <input type="text" th:value="${param.couponcode}"
+                                               placeholder="Enter Coupon Code..." name="couponcode">
                                     </div>
                                     <div class="form-group">
-                                        <button class="btn  btn-md" type="submit" name="action" th:value="apply" th:text="'Apply Coupon'"></button>
+                                        <button class="btn  btn-md" type="submit" name="action" th:value="apply"
+                                                th:text="'Apply Coupon'"></button>
                                     </div>
                                 </form>
                             </div>
                         </div>
-                        <div class="mt-25" th:if="${coupon != null}" style="border: 1px solid #ccc; padding: 10px; margin: 10px;">
-                            <a>  Coupon Applied successfully....</a>
+                        <div class="mt-25" th:if="${coupon != null}"
+                             style="border: 1px solid #ccc; padding: 10px; margin: 10px;">
+                            <a> Coupon Applied successfully....</a>
 
-                            <div class="mt-25"  style="border: 1px solid #ccc; padding: 10px; margin: 10px;">
+                            <div class="mt-25" style="border: 1px solid #ccc; padding: 10px; margin: 10px;">
                                 <p th:text="${coupon.couponDescription}"></p>
                                 <p>Code: <strong th:text="${coupon.couponcode}"></strong></p>
                                 <p>Discount % : <strong th:text="${coupon.offerPercentage}"></strong></p>
                                 <form th:action="@{/removeCoupon}" th:method="post">
-                                    <button class="btn btn-md" type="submit" name="action" th:value="remove" th:text="'Remove Coupon'"></button>
+                                    <button class="btn btn-md" type="submit" name="action" th:value="remove"
+                                            th:text="'Remove Coupon'"></button>
                                 </form>
                             </div>
                         </div>
 
-                        <div class="mt-25" th:if="${coupons != null && coupon == null}" style="border: 1px solid #ccc; padding: 10px; margin: 10px;">
+                        <div class="mt-25" th:if="${coupons != null && coupon == null}"
+                             style="border: 1px solid #ccc; padding: 10px; margin: 10px;">
                             <a>Available Coupons...</a>
-                            <div class="mt-25" th:each="coupon : ${coupons}" style="border: 1px solid #ccc; padding: 10px; margin: 10px;">
+                            <div class="mt-25" th:each="coupon : ${coupons}"
+                                 style="border: 1px solid #ccc; padding: 10px; margin: 10px;">
                                 <p th:text="${coupon.couponDescription}"></p>
                                 <p>Code: <strong th:text="${coupon.couponcode}"></strong></p>
                                 <p>Discount % : <strong th:text="${coupon.offerPercentage}"></strong></p>
@@ -135,7 +147,8 @@
                             <div class="card mb-30">
                                 <div class="card-header">
 
-                                    <input class="form-check-input selectCheckBox" type="radio" th:value="${address.id}" name="addressId" >
+                                    <input class="form-check-input selectCheckBox" type="radio" th:value="${address.id}"
+                                           name="addressId">
                                     <h5 class="mb-0"><span th:text="${address.addressLine1}"></span></h5>
                                 </div>
                                 <div class="card-body">
@@ -143,16 +156,18 @@
 
                                         <span th:text="${address.addressLine2}"></span>,<br>
                                         <span th:text="${address.city}"></span>,
-                                        <span th:text="${address.pincode}"></span> Ph:<span th:text="${customer.mobile}"></span>
+                                        <span th:text="${address.pincode}"></span> Ph:<span
+                                            th:text="${customer.mobile}"></span>
                                     </address>
                                     <p><span th:text="${address.district}"></span>
                                         <span th:text="${address.state}"></span></p>
                                     <p><span th:text="${address.country}"></span></p>
-                                    <a th:href="@{/editAddress(addressId=${address.id})}" class="btn btn-danger">Edit</a>
+                                    <a th:href="@{/editAddress(addressId=${address.id})}"
+                                       class="btn btn-danger">Edit</a>
 
                                 </div>
                             </div>
-                        </div >
+                        </div>
 
                     </div>
                     <div class="payment_method">
@@ -161,39 +176,47 @@
                         </div>
                         <div class="payment_option">
                             <div class="custome-radio">
-                                <input class="form-check-input payment_option" required="" type="radio" name="payment_option" id="exampleRadios3"  th:value="cash_on_delivery">
-                                <label class="form-check-label" for="exampleRadios3" data-bs-toggle="collapse" data-target="#bankTranfer" aria-controls="bankTranfer">Cash on Delivery</label>
+                                <input class="form-check-input payment_option" required="" type="radio"
+                                       name="payment_option" id="exampleRadios3" th:value="cash_on_delivery">
+                                <label class="form-check-label" for="exampleRadios3" data-bs-toggle="collapse"
+                                       data-target="#bankTranfer" aria-controls="bankTranfer">Cash on Delivery</label>
                                 <div class="form-group collapse in" id="bankTranfer">
-                                    <p class="text-muted mt-5">There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration. </p>
+                                    <p class="text-muted mt-5">There are many variations of passages of Lorem Ipsum
+                                        available, but the majority have suffered alteration. </p>
                                 </div>
-                                <div id="codMessage" class="alert alert-danger mt-2" style="display: none;"></div>
+                                <div id="codMessage" class="form-group collapse in"
+                                     style="display:none; color:red;"></div>
                             </div>
                             <div class="custome-radio">
-                                <input class="form-check-input payment_option" required="" type="radio" name="payment_option" id="exampleRadios4" th:value="online_payment">
-                                <label class="form-check-label" for="exampleRadios4" data-bs-toggle="collapse" data-target="#checkPayment" aria-controls="checkPayment">Online Payment</label>
+                                <input class="form-check-input payment_option" required="" type="radio"
+                                       name="payment_option" id="exampleRadios4" th:value="online_payment">
+                                <label class="form-check-label" for="exampleRadios4" data-bs-toggle="collapse"
+                                       data-target="#checkPayment" aria-controls="checkPayment">Online Payment</label>
                                 <div class="form-group collapse in" id="checkPayment">
-                                    <p class="text-muted mt-5">Please send your cheque to Store Name, Store Street, Store Town, Store State / County, Store Postcode. </p>
+                                    <p class="text-muted mt-5">Please send your cheque to Store Name, Store Street,
+                                        Store Town, Store State / County, Store Postcode. </p>
                                 </div>
                             </div>
                             <div class="custome-radio">
-                                <input class="form-check-input payment_option" required="" type="radio" name="payment_option" id="exampleRadios5" th:value="wallet" >
-                                <label class="form-check-label" for="exampleRadios5" data-bs-toggle="collapse" data-target="#paypal" aria-controls="paypal">Wallet</label>
-                                <div><span>(Balance:[(${customer.wallet.balance})])</span></div>
+                                <input class="form-check-input payment_option" required="" type="radio"
+                                       name="payment_option" id="exampleRadios5" th:value="wallet">
+                                <label class="form-check-label" for="exampleRadios5" data-bs-toggle="collapse"
+                                       data-target="#paypal" aria-controls="paypal">Wallet</label>
+                                <div><span>(Balance:[(${customer.wallet.balance})])</span> <a th:href="@{/wallets}">Add Balance</a></div>
 
-                                <div class="form-group collapse in" id="wallet">
+                                <div class="form-group collapse in" id="walletMessage" style="display:none; color:red;">
                                     <p class="text-muted mt-5"></p>
                                 </div>
 
                             </div>
-
                         </div>
+                        <div th:if="${param.addressEmpty}">
+                            <div class="alert alert-danger">Please select the Address !</div>
+                        </div>
+                        <button type="submit" class="btn  btn-block mt-30" onclick="placeOrder()">Place order</button>
                     </div>
-                    <div th:if="${param.addressEmpty}">
-                        <div class="alert alert-danger">Please select the Address !</div>
-                    </div>
-                    <button type="submit" class="btn  btn-block mt-30" onclick="placeOrder()" >Place order</button>
-                </div>
 
+                </div>
             </div>
         </div>
     </section>
@@ -205,7 +228,8 @@
 <div th:replace="~{fragments::pre-loader}"></div>
 <!-- Vendor JS-->
 <div th:replace="~{fragments::scripts}"></div>
-<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
 
@@ -227,6 +251,7 @@
         console.log(paymentMethod);
 
         $('#codMessage').hide().text('');
+        $('#walletMessage').hide().text('');
 
         if (checkedAddress === undefined) {
             alert("Please choose a shipping address!!");
@@ -246,110 +271,101 @@
     }
 
     const paymentStart = (addressId, paymentMethod, amount) => {
-        console.log(addressId);
-        console.log(paymentMethod);
-        console.log(amount);
+        $.ajax({
+            url: '/shop/createPayment',
+            data: JSON.stringify({
+                addressId: addressId,
+                paymentMethod: paymentMethod,
+                amount: amount
+            }),
+            contentType: 'application/json',
+            type: 'POST',
+            dataType: 'json',
+            headers: {
+                'X-CSRF-TOKEN': $('[name="_csrf"]').attr('content')
+            },
 
-        // Handle payment method specific actions
-        if (paymentMethod === "cash_on_delivery") {
-            $.ajax({
-                url: '/shop/createPayment',
-                data: JSON.stringify({
-                    addressId: addressId,
-                    paymentMethod: paymentMethod,
-                    amount: amount
-                }),
-                contentType: 'application/json',
-                type: 'POST',
-                dataType: 'json',
-                headers: {
-                    'X-CSRF-TOKEN': $('[name="_csrf"]').attr('content')
-                },
-                success: function (response) {
-                    console.log(response);
-                    if (response.status === "cash") {
-                        location.href = '/shop/orderConfirm';
-                    }
-                },
-                error: function (error) {
-                    console.log(error);
+            success: function (response) {
+                console.log("01")
+                const newOrderId=response.newOrderId;
+                if (response.status === "cash") {
+                    location.href = '/shop/orderConfirm';
+                } else if (response.status === "created") {
+                    let options = {
+                        key: 'rzp_test_0KTaWunlL4sKzR',
+                        amount: response.amount,
+                        currency: 'INR',
+                        name: 'My Shoe store Ecommerce',
+                        description: 'Purchase order',
+                        order_id: response.id,
+                        handler: function (response) {
+                            location.href = '/shop/orderConfirm';
+                            updatePaymentStatus(response.razorpay_order_id, "success");
+                        },
+                        prefill: {
+                            name: "",
+                            email: "",
+                            contact: ""
+                        },
+                        notes: {
+                            address: "My Payment"
+                        },
+                        theme: {
+                            color: "#365008"
+                        }
+                    };
+                    let rzp1 = new Razorpay(options);
+                    rzp1.open();
+                    console.log(rzp1.toString())
+                    rzp1.on('payment.failed', function (response) {
+                        alert("Failed!! Oops Payment failed. Please try after some time");
+                        // updatePaymentStatus(response.error.metadata.order_id, "failed");
+                        //newOrderId
+
+                        updatePaymentStatus(newOrderId, "failed");
+
+                    });
+                } else if (response.status === "noWallet") {
+                    $('#walletMessage').text("Insufficient Wallet Balance.").show();
+                } else if (response.status === "wallet") {
+                    location.href = '/shop/orderConfirm';
+                }
+            },
+            error: function (error) {
+                alert("Something went wrong!!");
+            }
+        });
+    }
+
+    const updatePaymentStatus = (orderId, status) => {
+        $.ajax({
+            url: '/shop/verify-payment',
+            data: JSON.stringify({
+                order_id: orderId,
+                status: status
+            }),
+            contentType: 'application/json',
+            type: 'POST',
+            dataType: 'json',
+            headers: {
+                'X-CSRF-TOKEN': $('[name="_csrf"]').attr('content')
+            },
+            success: function (res) {
+                if (res.status === "done") {
+                    console.log("Payment status updated successfully");
+                }
+            },
+
+            error: function (error) {
+                if (error.status === 0) {
+                    alert("Payment failed");
+                } else {
                     alert("Something went wrong!!");
                 }
-            });
-        } else {
-            $.ajax({
-                url: '/shop/createPayment',
-                data: JSON.stringify({
-                    addressId: addressId,
-                    paymentMethod: paymentMethod,
-                    amount: amount
-                }),
-                contentType: 'application/json',
-                type: 'POST',
-                dataType: 'json',
-                headers: {
-                    'X-CSRF-TOKEN': $('[name="_csrf"]').attr('content')
-                },
-                success: function (response) {
-                    console.log(response);
-                    if (response.status === "created") {
-                        let options = {
-                            key: 'rzp_test_0KTaWunlL4sKzR',
-                            amount: response.amount,
-                            currency: 'INR',
-                            name: 'My Shoe store Ecommerce',
-                            description: 'Purchase order',
-                            order_id: response.id,
-                            handler: function (response) {
-                                console.log(response.razorpay_payment_id);
-                                console.log(response.razorpay_order_id);
-                                console.log(response.razorpay_signature);
-
-                                location.href = '/shop/orderConfirm';
-                            },
-                            prefill: {
-                                name: "",
-                                email: "",
-                                contact: ""
-                            },
-                            notes: {
-                                address: "My Payment"
-                            },
-                            theme: {
-                                color: "#3399cc"
-                            }
-                        };
-                        var rzp1 = new Razorpay(options);
-                        rzp1.open();
-                        rzp1.on('payment.failed', function (response) {
-                            console.log(response.error.code);
-                            console.log(response.error.description);
-                            console.log(response.error.source);
-                            console.log(response.error.step);
-                            console.log(response.error.reason);
-                            console.log(response.error.metadata.order_id);
-                            console.log(response.error.metadata.payment_id);
-
-                            alert("Failed!! Oops Payment failed. Please try after some time");
-                        });
-                    } else if (response.status === "cash") {
-                        location.href = '/shop/orderConfirm';
-                    } else if (response.status === "noWallet") {
-                        alert("Wallet amount is less");
-                    } else if (response.status === "wallet") {
-                        location.href = '/shop/orderConfirm';
-                    }
-                },
-                error: function (error) {
-                    console.log(error);
-                    alert("Something went wrong!!");
-                }
-            });
-        }
+            }
+        });
     }
 </script>
-
-
 
 
 </body>

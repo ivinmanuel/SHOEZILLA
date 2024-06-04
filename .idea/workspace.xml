@@ -6,19 +6,27 @@
   <component name="ChangeListManager">
     <list default="true" id="9ef088cb-66eb-4055-99c9-30ad15faadb4" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Admin/src/main/java/com/ecommerce/admin/controller/DashBoardController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Admin/src/main/java/com/ecommerce/admin/controller/DashBoardController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Admin/src/main/resources/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/Admin/src/main/resources/templates/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Library/src/main/java/com/ecommerce/library/repository/CategoryRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/Library/src/main/java/com/ecommerce/library/repository/CategoryRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Library/src/main/java/com/ecommerce/library/repository/ProductRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/Library/src/main/java/com/ecommerce/library/repository/ProductRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Library/src/main/java/com/ecommerce/library/service/CategoryService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Library/src/main/java/com/ecommerce/library/service/CategoryService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Library/src/main/java/com/ecommerce/library/service/ProductService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Library/src/main/java/com/ecommerce/library/service/ProductService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Library/src/main/java/com/ecommerce/library/service/impl/CategoryServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/Library/src/main/java/com/ecommerce/library/service/impl/CategoryServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Library/src/main/java/com/ecommerce/library/service/impl/ProductServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/Library/src/main/java/com/ecommerce/library/service/impl/ProductServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Customer/src/main/java/com/ecommerce/customer/controller/OrderController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Customer/src/main/java/com/ecommerce/customer/controller/OrderController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Customer/src/main/resources/templates/account.html" beforeDir="false" afterPath="$PROJECT_DIR$/Customer/src/main/resources/templates/account.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Customer/src/main/resources/templates/cart.html" beforeDir="false" afterPath="$PROJECT_DIR$/Customer/src/main/resources/templates/cart.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Customer/src/main/resources/templates/checkOut.html" beforeDir="false" afterPath="$PROJECT_DIR$/Customer/src/main/resources/templates/checkOut.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Customer/src/main/resources/templates/fragments.html" beforeDir="false" afterPath="$PROJECT_DIR$/Customer/src/main/resources/templates/fragments.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Customer/src/main/resources/templates/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/Customer/src/main/resources/templates/home.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Customer/src/main/resources/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/Customer/src/main/resources/templates/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Customer/src/main/resources/templates/order-details.html" beforeDir="false" afterPath="$PROJECT_DIR$/Customer/src/main/resources/templates/order-details.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Customer/src/main/resources/templates/orders.html" beforeDir="false" afterPath="$PROJECT_DIR$/Customer/src/main/resources/templates/orders.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Library/src/main/java/com/ecommerce/library/model/Order.java" beforeDir="false" afterPath="$PROJECT_DIR$/Library/src/main/java/com/ecommerce/library/model/Order.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Library/src/main/java/com/ecommerce/library/service/AddressService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Library/src/main/java/com/ecommerce/library/service/AddressService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Library/src/main/java/com/ecommerce/library/service/OrderService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Library/src/main/java/com/ecommerce/library/service/OrderService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Library/src/main/java/com/ecommerce/library/service/impl/OrderServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/Library/src/main/java/com/ecommerce/library/service/impl/OrderServiceImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CompilerWorkspaceConfiguration">
+    <option name="MAKE_PROJECT_ON_SAVE" value="true" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -59,18 +67,20 @@
     &quot;git-widget-placeholder&quot;: &quot;master&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/ivin manuel/Desktop/BROTOTYPE/E-COMMERCE_PROJECT_SHOEZILLA/ShoeZilla/Admin/src/main/resources/templates&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/ivin manuel/Desktop/BROTOTYPE/E-COMMERCE_PROJECT_SHOEZILLA/ShoeZilla/Customer/src/main/resources/static&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
     &quot;run.configurations.included.in.services&quot;: &quot;true&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;project.propCompiler&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\ivin manuel\Desktop\BROTOTYPE\E-COMMERCE_PROJECT_SHOEZILLA\ShoeZilla\Customer\src\main\resources\static" />
       <recent name="C:\Users\ivin manuel\Desktop\BROTOTYPE\E-COMMERCE_PROJECT_SHOEZILLA\ShoeZilla\Admin\src\main\resources\templates" />
       <recent name="C:\Users\ivin manuel\Desktop\BROTOTYPE\week 10 - project week 3\ShoeZilla\ShoeZilla\ShoeZilla\ShoeZilla\ShoeZilla\ShoeZilla\Customer\src\main\resources\templates" />
       <recent name="C:\Users\ivin manuel\Desktop\BROTOTYPE\week 10 - project week 3\ShoeZilla\ShoeZilla\ShoeZilla\ShoeZilla\ShoeZilla\ShoeZilla\Customer\src\main\resources\static\imgs\items" />
@@ -93,7 +103,7 @@
       </set>
     </option>
   </component>
-  <component name="RunManager" selected="Spring Boot.AdminApplication">
+  <component name="RunManager" selected="Spring Boot.CustomerApplication">
     <configuration name="AdminApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
       <module name="Admin" />
@@ -147,6 +157,10 @@
       <workItem from="1716637584544" duration="4727000" />
       <workItem from="1716783561785" duration="27843000" />
       <workItem from="1716829880424" duration="7378000" />
+      <workItem from="1717474793993" duration="11702000" />
+      <workItem from="1717490074639" duration="128000" />
+      <workItem from="1717490313357" duration="16956000" />
+      <workItem from="1717509649174" duration="984000" />
     </task>
     <servers />
   </component>

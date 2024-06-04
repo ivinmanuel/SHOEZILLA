@@ -7,11 +7,12 @@ import com.ecommerce.library.model.Order;
 import com.ecommerce.library.model.OrderDetails;
 import com.ecommerce.library.model.ShoppingCart;
 import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
-
+@Service
 public interface OrderService {
    Order saveOrder(ShoppingCart shoppingCart, String email, Long addressId, String paymentMethod, Double grandTotal);
 

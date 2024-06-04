@@ -19,81 +19,110 @@
     <section class="pt-80 pb-100">
         <div class="container">
             <div class="row">
-
-                    <div class="card">
-                        <div class="card-header">
-                            <h5 class="mb-0">Your Orders</h5>
-                        </div>
-
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table">
-                                    <thead>
-                                    <tr>
-                                        <th>Order</th>
-
-                                        <th>Date</th>
-                                        <th>Status</th>
-                                        <th>Total
-                                        <th>Payment Method</th>
-                                        <th>Actions</th>
-                                        <th>Invoice</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr th:each="orderDetail:${orders}">
-                                        <td th:text="${orderDetail.id}">#</td>
-
-                                        <td th:text="${orderDetail.orderDate}"></td>
-                                        <td th:text="${orderDetail.orderStatus}"></td>
-                                        <td th:text="${orderDetail.grandTotalPrize}">$</td>
-                                        <td th:text="${orderDetail.paymentMethod}"></td>
-                                        <td>
-                                            <a href="#orders" class="btn-danger" th:if="${orderDetail.orderStatus=='Pending' || orderDetail.orderStatus=='Shipped'}" th:href="@{/cancelOrder(orderId=${orderDetail.id})}"
-                                               onclick="if (!confirm('Are you sure want to Cancel This item'))return false">Cancel</a>
-                                            <a href="#orders" class="btn-success" th:if="${orderDetail.orderStatus=='Cancel'}">Cancelled</a>
-                                            <a class="btn-danger"  th:if="${orderDetail.orderStatus=='Delivered'}" th:href="@{/returnOrder(orderId=${orderDetail.id})}"
-                                               onclick="if (!confirm('Are you sure want to Return This item'))return false">
-                                                Return</a>
-                                            <a th:if="${orderDetail.orderStatus !='Cancel'}" th:href="@{/orderDetails(orderId=${orderDetail.id})}" class="btn-small d-block">View</a></td>
-
-                                        <td>
-                                            <a aria-label="Download" class="btn hover-up" th:if="${orderDetail.orderStatus != 'Cancel'}" th:href="@{/generateInvoice(orderId=${orderDetail.id})}">
-                                                <i class="fi-rs-download"></i>
-                                            </a>
-                                        </td>
-                                    </tr>
-
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-
-
-
-
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Your Orders</h5>
                     </div>
+                    <div class="card-body">
+                        <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
+                            <table class="table" th:each="orderDetail:${orders}">
+                                <thead style="position: sticky; top: 0; background-color: white; z-index: 1;">
+                                <tr>
+                                    <th>Order</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                    <th>Total</th>
+                                    <th>Payment Method</th>
+                                    <th>Payment Status</th>
+                                    <th>Actions</th>
+                                    <th th:if="${orderDetail.paymentStatus != 'Payment Pending'}">Invoice</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="orderDetail:${orders}">
+                                    <td th:text="${orderDetail.id}">#</td>
+                                    <td th:text="${orderDetail.orderDate}"></td>
+                                    <td th:text="${orderDetail.orderStatus}"></td>
+                                    <td th:text="${orderDetail.grandTotalPrize}">$</td>
+                                    <td th:text="${orderDetail.paymentMethod}"></td>
+                                    <td th:text="${orderDetail.paymentStatus}"></td>
+                                    <td>
+                                        <a href="#orders" class="btn-danger" th:if="${orderDetail.orderStatus == 'Pending' || orderDetail.orderStatus == 'Shipped'}" th:href="@{/cancelOrder(orderId=${orderDetail.id})}"
+                                           onclick="if (!confirm('Are you sure want to Cancel This item')) return false">Cancel</a>
+                                        <a href="#orders" class="btn-success" th:if="${orderDetail.orderStatus == 'Cancel'}">Cancelled</a>
+                                        <a class="btn-danger" th:if="${orderDetail.orderStatus == 'Delivered'}" th:href="@{/returnOrder(orderId=${orderDetail.id})}"
+                                           onclick="if (!confirm('Are you sure want to Return This item')) return false">Return</a>
+                                        <a th:if="${orderDetail.orderStatus != 'Cancel'}" th:href="@{/orderDetails(orderId=${orderDetail.id})}" class="btn-small d-block">View</a>
+<!--                                        <a aria-label="Pay Now" class="btn btn-primary" th:if="${orderDetail.paymentStatus == 'Failed'}" th:href="@{/payNow(orderId=${orderDetail.id})}">-->
+<!--                                            Pay Now-->
+<!--                                        </a>-->
+                                    </td>
+                                    <td th:if="${orderDetail.paymentStatus != 'Payment Pending'}">
+                                        <a aria-label="Download" class="btn hover-up" th:if="${orderDetail.orderStatus != 'Cancel'}" th:href="@{/generateInvoice(orderId=${orderDetail.id})}">
+                                            <i class="fi-rs-download"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="pagination-area mt-30 mb-50">
                     <nav aria-label="Page navigation example">
                         <ul class="pagination justify-content-start">
-                            <li class="page-item " th:if="${currentPage!=0}"><a class="page-link"  th:href="@{'/order?pageNo='+ ${currentPage-1}}"><<</a></li>
-                            <li class="page-item" th:classappend="${currentPage == i-1 ?'active':''}" th:each="i:${#numbers.sequence(1,totalPage)}">
-                                <a class="page-link" th:href="@{'/order?pageNo='+${i-1}}"> <span th:text="${i}"></span></a></li>
-                            <li class="page-item" th:if="${currentPage+1 !=totalPage}"><a class="page-link" th:href="@{'/order?pageNo='+ ${currentPage+1}}">>> </a></li>
+                            <!-- Previous Page Link -->
+                            <li class="page-item" th:if="${currentPage != 0}">
+                                <a class="page-link" th:href="@{'/order?pageNo=' + ${currentPage - 1}}"><<</a>
+                            </li>
 
+                            <!-- First Few Pages -->
+                            <li class="page-item" th:each="i : ${#numbers.sequence(1, 2)}" th:if="${i <= totalPage}">
+                                <a class="page-link" th:href="@{'/order?pageNo=' + ${i - 1}}" th:classappend="${currentPage == i - 1} ? 'active'">
+                                    <span th:text="${i}"></span>
+                                </a>
+                            </li>
+
+                            <!-- Ellipses Before the Middle Pages -->
+                            <li class="page-item" th:if="${currentPage > 2}">
+                                <span class="page-link">...</span>
+                            </li>
+
+                            <!-- Middle Page -->
+                            <li class="page-item" th:if="${currentPage > 1 && currentPage < totalPage - 2}">
+                                <a class="page-link" th:href="@{'/order?pageNo=' + ${currentPage - 1}}" th:classappend="active">
+                                    <span th:text="${currentPage + 1}"></span>
+                                </a>
+                            </li>
+
+                            <!-- Ellipses After the Middle Pages -->
+                            <li class="page-item" th:if="${currentPage < totalPage - 3}">
+                                <span class="page-link">...</span>
+                            </li>
+
+                            <!-- Last Few Pages -->
+                            <li class="page-item" th:each="i : ${#numbers.sequence(totalPage - 1, totalPage)}" th:if="${i > 2}">
+                                <a class="page-link" th:href="@{'/order?pageNo=' + ${i - 1}}" th:classappend="${currentPage == i - 1} ? 'active'">
+                                    <span th:text="${i}"></span>
+                                </a>
+                            </li>
+
+                            <!-- Next Page Link -->
+                            <li class="page-item" th:if="${currentPage + 1 != totalPage}">
+                                <a class="page-link" th:href="@{'/order?pageNo=' + ${currentPage + 1}}">>></a>
+                            </li>
                         </ul>
                     </nav>
                 </div>
-                </div>
+            </div>
         </div>
     </section>
 </main>
 <footer th:replace="~{fragments::footer-sec}"></footer>
-
 <div th:replace="~{fragments::pre-loader}"></div>
 <!-- Vendor JS-->
 <div th:replace="~{fragments::scripts}"></div>
 
-</div>
 </body>
 </html>

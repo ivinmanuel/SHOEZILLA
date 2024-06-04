@@ -2,6 +2,7 @@ package com.ecommerce.library.service;
 
 import com.ecommerce.library.dto.AddressDto;
 import com.ecommerce.library.model.Address;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;

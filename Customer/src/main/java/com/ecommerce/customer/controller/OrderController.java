@@ -3,6 +3,7 @@ package com.ecommerce.customer.controller;
 import com.ecommerce.customer.config.CustomerDetails;
 import com.ecommerce.library.dto.DailyEarning;
 import com.ecommerce.library.model.*;
+import com.ecommerce.library.repository.OrderRepository;
 import com.ecommerce.library.service.AddressService;
 import com.ecommerce.library.service.OrderService;
 import com.ecommerce.library.service.ShoppingCartService;
@@ -38,15 +39,17 @@ public class OrderController {
     ShoppingCartService shopCartService;
 
     WalletService walletService;
+    OrderRepository orderRepository;
 
 
     @Autowired
     public OrderController(OrderService orderService, AddressService addressService,
-                           ShoppingCartService shopCartService,WalletService walletService) {
+                           ShoppingCartService shopCartService,WalletService walletService,OrderRepository orderRepository) {
         this.orderService = orderService;
         this.addressService = addressService;
         this.shopCartService = shopCartService;
         this.walletService = walletService;
+        this.orderRepository = orderRepository;
     }
 
 
@@ -79,73 +82,91 @@ public class OrderController {
 
     @PostMapping("/createPayment")
     @ResponseBody
-    public String showOnlinePayment(Principal principal,Authentication authentication,
-                                    @RequestBody Map<String, Object> data) throws RazorpayException{
-
-        CustomerDetails customerDetails= (CustomerDetails) authentication.getPrincipal();
-        long id=customerDetails.getCustomer_id();
-        String username=principal.getName();
+    public String showOnlinePayment(Principal principal, Authentication authentication,
+                                    @RequestBody Map<String, Object> data) throws RazorpayException {
+        CustomerDetails customerDetails = (CustomerDetails) authentication.getPrincipal();
+        long id = customerDetails.getCustomer_id();
+        String username = principal.getName();
         String paymentMethod = data.get("paymentMethod").toString();
-        Long address_id=Long.parseLong(data.get("addressId").toString());
-        Double amount= Double.valueOf(data.get("amount").toString());
+        Long address_id = Long.parseLong(data.get("addressId").toString());
+        Double amount = Double.valueOf(data.get("amount").toString());
 
-        System.out.println(amount);
         if (!orderService.isCodAllowed(amount) && paymentMethod.equalsIgnoreCase("cash_on_delivery")) {
             JSONObject option = new JSONObject();
             option.put("status", "COD not allowed for orders above Rs 1000");
             return option.toString();
         }
+        if (paymentMethod.equals("wallet")) {
+            Wallet wallet = walletService.findByCustomer(id);
+            if (wallet.getBalance() < amount) {
+                JSONObject option = new JSONObject();
+                option.put("status", "noWallet");
+                return option.toString();
+            }
+        }
 
-        ShoppingCart shoppingCart = new ShoppingCart();
-        orderService.saveOrder(shoppingCart, username, address_id, paymentMethod, amount);
 
-        if(paymentMethod.equals("online_payment")) {
-            orderService.saveOrder(shoppingCart, username, address_id,paymentMethod,amount);
+            ShoppingCart shoppingCart = new ShoppingCart();
+        Order order = orderService.saveOrder(shoppingCart, username, address_id, paymentMethod, amount);
+
+        if (paymentMethod.equals("online_payment")) {
             RazorpayClient client = new RazorpayClient("rzp_test_0KTaWunlL4sKzR", "m8xtLRI9e6sRDuH7vmMvHaGo");
-            org.json.JSONObject object = new org.json.JSONObject();
+            JSONObject object = new JSONObject();
             object.put("amount", amount * 100);
             object.put("currency", "INR");
             object.put("receipt", "receipt#1");
-            com.razorpay.Order order = client.orders.create(object);
-            System.out.println(order);
-            System.out.println(paymentMethod);
-            System.out.println(address_id);
-            return order.toString();
+            com.razorpay.Order razorpayOrder = client.orders.create(object);
 
-        }
-        if(paymentMethod.equals("wallet")){
-            Wallet wallet=walletService.findByCustomer(id);
-            if(wallet.getBalance()<amount){
-                org.json.JSONObject option=new org.json.JSONObject();
-                option.put("status","noWallet");
-                return option.toString();
-            }
-            else{
-                orderService.saveOrder(shoppingCart, username, address_id,paymentMethod,amount);
-                walletService.debit(wallet,amount);
-                org.json.JSONObject option=new org.json.JSONObject();
-                option.put("status","wallet");
-                return option.toString();
-            }
+            // Update payment status to Pending
+            order.setPaymentStatus("Success");
+            Order newOrder = orderRepository.save(order); //
 
-        }
-        else{
-            orderService.saveOrder(shoppingCart, username, address_id,paymentMethod,amount);
-            org.json.JSONObject option=new JSONObject();
-            option.put("status","cash");
+            JSONObject response = new JSONObject(razorpayOrder.toString());
+            response.put("status", "created");
+            response.put("newOrderId", newOrder.getId().toString());
+
+            return response.toString();
+        } else if (paymentMethod.equals("wallet")) {
+            Wallet wallet = walletService.findByCustomer(id);
+            orderService.saveOrder(shoppingCart, username, address_id, paymentMethod, amount);
+                walletService.debit(wallet, amount);
+                order.setPaymentStatus("Success");
+                orderRepository.save(order);
+
+                JSONObject option = new JSONObject();
+                option.put("status", "wallet");
+                return option.toString();
+
+        } else {
+            order.setPaymentStatus("Success");
+            orderRepository.save(order);
+
+            JSONObject option = new JSONObject();
+            option.put("status", "cash");
             return option.toString();
         }
-
-
-
     }
+
 
     @PostMapping("/verify-payment")
     @ResponseBody
-    public String showVerifyPayment(@RequestBody Map<String,Object> data){
+    public String showVerifyPayment(@RequestBody Map<String, Object> data) {
+        String paymentStatus = data.get("status").toString();
+        var orderId = data.get("order_id").toString();
 
-        return "done";
+        Order order = orderService.findById(Long.parseLong(orderId));
+
+        if (paymentStatus.equalsIgnoreCase("success")) {
+            order.setPaymentStatus("Success");
+        } else {
+            order.setPaymentStatus("Payment Pending");
+        }
+
+        orderRepository.save(order);
+
+        return "{\"status\":\"done\"}";
     }
+
 
 
     @GetMapping("/orderListPdf1")
