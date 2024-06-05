@@ -317,10 +317,10 @@
                     let rzp1 = new Razorpay(options);
                     rzp1.open();
                     console.log(rzp1.toString())
-                    rzp1.on('payment.failed', function () {
-                        console.log("11")
+                    rzp1.on('payment.failed', function (response) {
+                        console.log("Payment failed response:", response);
                         alert("Failed!! Oops Payment failed. Please try after some time");
-                        location.href='/shop/account'
+                        location.href='/shop/orderFailure'
                         //newOrderId
 
                         updatePaymentStatus(newOrderId, "failed");

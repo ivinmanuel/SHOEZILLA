@@ -14,9 +14,9 @@ import java.nio.file.StandardOpenOption;
 
 @Service
 public class ImageUpload {
-    private final String UPLOAD_FOLDER = "C:\\Users\\ivin manuel\\Desktop\\BROTOTYPE\\E-COMMERCE_PROJECT_SHOEZILLA\\ShoeZilla\\Admin\\src\\main\\resources\\static\\imgs\\items";
+    private final String UPLOAD_FOLDER = "/home/ubuntu/ecommerce/SHOEZILLA/Admin/src/main/resources/static/imgs/items";
 
-    String UPLOAD_FOLDER_CUSTOMER ="C:\\Users\\ivin manuel\\Desktop\\BROTOTYPE\\E-COMMERCE_PROJECT_SHOEZILLA\\ShoeZilla\\Customer\\src\\main\\resources\\static\\imgs\\items";
+    String UPLOAD_FOLDER_CUSTOMER ="/home/ubuntu/ecommerce/SHOEZILLA/Customer/src/main/resources/static/imgs/items";
 
     public String storeFile(MultipartFile file) throws IOException {
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());

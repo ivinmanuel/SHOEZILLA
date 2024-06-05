@@ -62,6 +62,11 @@ public class OrderController {
         return "order-confirm";
     }
 
+    @GetMapping("/orderFailure")
+    public String showOrderFailure(){
+        return "order-failure";
+    }
+
     @GetMapping("/order")
     public String showOrder(@RequestParam("pageNo")int pageNo, Model model, Principal principal) {
         if (principal == null) {
