@@ -4,6 +4,7 @@ import com.ecommerce.customer.config.CustomerDetails;
 import com.ecommerce.library.dto.DailyEarning;
 import com.ecommerce.library.model.*;
 import com.ecommerce.library.repository.OrderRepository;
+import com.ecommerce.library.repository.ShopingCartRepository;
 import com.ecommerce.library.service.AddressService;
 import com.ecommerce.library.service.OrderService;
 import com.ecommerce.library.service.ShoppingCartService;
@@ -41,15 +42,18 @@ public class OrderController {
     WalletService walletService;
     OrderRepository orderRepository;
 
+    ShopingCartRepository cartRepo;
+
 
     @Autowired
     public OrderController(OrderService orderService, AddressService addressService,
-                           ShoppingCartService shopCartService,WalletService walletService,OrderRepository orderRepository) {
+                           ShoppingCartService shopCartService,WalletService walletService,OrderRepository orderRepository, ShopingCartRepository cartRepo) {
         this.orderService = orderService;
         this.addressService = addressService;
         this.shopCartService = shopCartService;
         this.walletService = walletService;
         this.orderRepository = orderRepository;
+        this.cartRepo = cartRepo;
     }
 
 
@@ -120,7 +124,7 @@ public class OrderController {
             // Update payment status to Pending
             order.setPaymentStatus("Success");
             Order newOrder = orderRepository.save(order); //
-
+//            orderService.deleteCart(username);//added1
             JSONObject response = new JSONObject(razorpayOrder.toString());
             response.put("status", "created");
             response.put("newOrderId", newOrder.getId().toString());
@@ -132,6 +136,7 @@ public class OrderController {
                 walletService.debit(wallet, amount);
                 order.setPaymentStatus("Success");
                 orderRepository.save(order);
+            orderService.deleteCart(username);//added2
 
                 JSONObject option = new JSONObject();
                 option.put("status", "wallet");
@@ -140,6 +145,7 @@ public class OrderController {
         } else {
             order.setPaymentStatus("Success");
             orderRepository.save(order);
+            orderService.deleteCart(username);//added3
 
             JSONObject option = new JSONObject();
             option.put("status", "cash");
@@ -158,8 +164,10 @@ public class OrderController {
 
         if (paymentStatus.equalsIgnoreCase("success")) {
             order.setPaymentStatus("Success");
+            orderService.deleteCart(order.getCustomer().getEmail());
         } else {
             order.setPaymentStatus("Payment Pending");
+
         }
 
         orderRepository.save(order);

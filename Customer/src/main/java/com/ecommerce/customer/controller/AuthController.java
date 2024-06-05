@@ -68,43 +68,42 @@ public class AuthController {
 
 
     @PostMapping("/do-register")
-    public String registerCustomer(@Valid @ModelAttribute("customerDto")
-                                        CustomerDto customerDto,
-                                        BindingResult result,
-                                        Model model, HttpSession session,RedirectAttributes redirectAttributes) {
+    public String registerCustomer(@Valid @ModelAttribute("customerDto") CustomerDto customerDto,
+                                   BindingResult result,
+                                   Model model,
+                                   HttpSession session,
+                                   RedirectAttributes redirectAttributes) {
         try {
             if (result.hasErrors()) {
-                session.removeAttribute("error");
                 model.addAttribute("customerDto", customerDto);
                 return "register";
             }
-            Customer customer=customerService.findByEmail(customerDto.getEmail());
-            if(customer!=null){
-                model.addAttribute("customerDto",customerDto);
-                session.removeAttribute("success");
-                session.setAttribute("error","Email has been registered");
+
+            Customer existingCustomer = customerService.findByEmail(customerDto.getEmail());
+            if (existingCustomer != null) {
+                model.addAttribute("customerDto", customerDto);
+                session.setAttribute("error", "Email has been registered");
                 return "register";
             }
-            if(customerDto.getPassword().equals(customerDto.getRepeatPassword())) {
-                customerDto.setPassword(passwordEncoder.encode(customerDto.getPassword()));
-                customerService.saveCustomer(customerDto);
-                session.removeAttribute("error");
-                session.setAttribute("success", "Registered Successfully");
-            } else{
-                session.removeAttribute("success");
-                session.setAttribute("error", "Password is not same");
+
+            if (!customerDto.getPassword().equals(customerDto.getRepeatPassword())) {
+                session.setAttribute("error", "Passwords do not match");
                 model.addAttribute("customerDto", customerDto);
                 return "register";
             }
+
+            // Encode password if necessary or skip this if you want to save plain text
+            // customerDto.setPassword(passwordEncoder.encode(customerDto.getPassword()));
+
+            customerService.saveCustomer(customerDto);
+            session.setAttribute("success", "Registered Successfully");
         } catch (Exception e) {
             e.printStackTrace();
-            session.removeAttribute("success");
-            session.setAttribute("error", "Server is error, try again later!");
+            session.setAttribute("error", "Server error, try again later!");
         }
-        redirectAttributes.addAttribute("email", customerDto.getEmail());
-        return "redirect:register";
-    }
 
+        return "redirect:/register";
+    }
 
 
 

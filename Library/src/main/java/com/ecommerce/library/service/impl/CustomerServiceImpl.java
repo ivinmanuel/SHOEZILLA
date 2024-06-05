@@ -31,26 +31,26 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
+    @Transactional
     public void saveCustomer(@Valid CustomerDto customerDto) {
-
-        Customer customer=new Customer();
-
+        Customer customer = new Customer();
         customer.setName(customerDto.getName());
         customer.setEmail(customerDto.getEmail());
-        customer.setPassword(customerDto.getPassword());
+        customer.setPassword(customerDto.getPassword()); // Storing password as plain text
         customer.setMobile(customerDto.getMobile());
         customer.setRole("User");
         customer.setActivated(true);
         customer.setBlocked(false);
-//        Wallet wallet = new Wallet();
-//        wallet.setBalance(0.0);
-//        wallet.setCustomer(customer);
-//        customer.setWallet(wallet);
 
+        // Create a new Wallet entity with a balance of 0 and associate it with the customer
+        Wallet wallet = new Wallet();
+        wallet.setBalance(0.0);
+        wallet.setCustomer(customer);
+        customer.setWallet(wallet);
 
+        // Save the customer entity (which includes the wallet) to the database
         customerRepository.save(customer);
     }
-
 
 
 

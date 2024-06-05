@@ -300,7 +300,7 @@
                         order_id: response.id,
                         handler: function (response) {
                             location.href = '/shop/orderConfirm';
-                            updatePaymentStatus(response.razorpay_order_id, "success");
+                            updatePaymentStatus(newOrderId, "success");
                         },
                         prefill: {
                             name: "",
@@ -317,9 +317,10 @@
                     let rzp1 = new Razorpay(options);
                     rzp1.open();
                     console.log(rzp1.toString())
-                    rzp1.on('payment.failed', function (response) {
+                    rzp1.on('payment.failed', function () {
+                        console.log("11")
                         alert("Failed!! Oops Payment failed. Please try after some time");
-                        // updatePaymentStatus(response.error.metadata.order_id, "failed");
+                        location.href='/shop/account'
                         //newOrderId
 
                         updatePaymentStatus(newOrderId, "failed");

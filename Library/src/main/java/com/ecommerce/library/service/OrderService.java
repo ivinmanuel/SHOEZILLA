@@ -14,7 +14,7 @@ import java.util.Date;
 import java.util.List;
 @Service
 public interface OrderService {
-   Order saveOrder(ShoppingCart shoppingCart, String email, Long addressId, String paymentMethod, Double grandTotal);
+    Order saveOrder(ShoppingCart shoppingCart, String email, Long addressId, String paymentMethod, Double grandTotal);
 
 
     List<OrderDetails> findAllOrder();
@@ -32,15 +32,19 @@ public interface OrderService {
     void cancelOrder(Long id);
 
     void returnOrder(Long id);
+
     List<Order> findOrderByCustomer(String email);
 
- Order findOrderByIdAndCustomerEmail(Long orderId, String email);
+    Order findOrderByIdAndCustomerEmail(Long orderId, String email);
 
- public List<Order> getDailyOrders(LocalDate date);
+    public List<Order> getDailyOrders(LocalDate date);
 
-    Page<Order> findOrderByPageble(int page,int size);
-    Page<Order> findOrderByCustomerPagable(int pageNo,String email);
-    Page<Order> findOrderByOrderStatusPagable(int pageNo,String status);
+    Page<Order> findOrderByPageble(int page, int size);
+
+    Page<Order> findOrderByCustomerPagable(int pageNo, String email);
+
+    Page<Order> findOrderByOrderStatusPagable(int pageNo, String status);
+
     List<Order> getDailyReport(Date date);
 
     void deleteOrderDetailsById(Long id);
@@ -50,7 +54,9 @@ public interface OrderService {
     List<Long> findOrderIdsByAddressId(Long addressId);
 
     List<Monthlyearning> getMonthlyReport(int year);
+
     List<DailyEarning> dailyReport(int year, int month);
+
     List<WeeklyEarnings> findWeeklyEarnings(int year);
 
     boolean isCodAllowed(Double grandTotal);
@@ -61,5 +67,8 @@ public interface OrderService {
     Double getTotalAmountForMonth();
 
     List<Long> findAllOrderCountForEachMonth();
+
     List<Double> getTotalAmountForEachMonth();
+
+    void deleteCart(String email);
 }

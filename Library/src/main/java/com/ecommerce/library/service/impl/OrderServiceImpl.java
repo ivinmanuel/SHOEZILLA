@@ -70,13 +70,20 @@ public class OrderServiceImpl implements OrderService {
             product.setCurrentQuantity(quantity);
             productRepository.save(product);
 
-            cart.setDeleted(true);
+//            cart.setDeleted(true);
             shopingCartRepository.save(cart);
         }
 
         return order;
     }
 
+    public void deleteCart(String email){
+        List<ShoppingCart> shoppingCarts = shopingCartRepository.findShoppingCartByCustomer(email);
+        ShoppingCart cart = shoppingCarts.stream().findFirst().get();
+        cart.setDeleted(true);
+        shopingCartRepository.save(cart);
+
+    }
 
     @Override
     public boolean isCodAllowed(Double grandTotal) {

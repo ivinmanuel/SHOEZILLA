@@ -46,7 +46,7 @@ public class Customer {
     @OneToMany(mappedBy = "customer")
     private List<Order> orders;
 
-    @OneToOne(mappedBy = "customer")
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "customer")
     private Wallet wallet;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)

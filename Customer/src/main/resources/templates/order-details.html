@@ -61,7 +61,7 @@
                                         </a>
                                     </td>
                                     <td th:if="${orderDetail.order.paymentStatus == 'Payment Pending'}">
-                                        <a aria-label="Pay Now" class="btn btn-primary" th:href="@{/checkOut(orderId=${orderDetail.order.id})}">
+                                        <a aria-label="Pay Now" class="btn btn-primary" th:href="@{/checkOut}">
                                             Pay Now
                                         </a>
                                     </td>
